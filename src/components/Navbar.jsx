@@ -4,16 +4,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 import UserProfile from "./UserProfile";
 import { useEffect } from "react";
 
-const NavBtn = ({ title, customFunction, icon, color, dotColor }) => (
+const NavBtn = ({ title, customFunction, icon, color }) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button
       type="button"
       onClick={customFunction}
-      style={{ color }}
-      className="relative text-xl rounded-full p-3 hover:bg-light-gray"
+      className="relative text-xl rounded-full p-3 hover:bg-light-gray text-blue-950"
     >
       <span
-        style={{ background: dotColor }}
         className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
       />{" "}
       {icon}{" "}
@@ -49,13 +47,12 @@ const Navbar = () => {
   }, [screenSize])
 
   return (
-    <div className="flex justify-between p-2 md:mx-6 relative">
+    <div className="flex justify-between p-2 md:mx-6 relative top-0">
       <NavBtn
         title="Menu"
         customFunction={() =>
           setActiveMenu((prevActiveMenu) => !prevActiveMenu)
         }
-        color="blue"
         icon={<MenuIcon />}
       />
 

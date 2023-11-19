@@ -47,13 +47,13 @@ function App() {
                 : 'bg-main-bg dark:bg-main-dark-bg  w-full min-h-screen flex-2 '
             }
           >
-            <div className="fixed md:static bg-main-bg dark:bg-dark-bg navbar w-full">
+            <div className="sticky top-0 bg-main-bg dark:bg-dark-bg navbar w-full">
               <Navbar />
             </div>
 
             <div className="p-4">
               <Routes>
-                <Route path="/" element={<Reservations />} />
+                <Route path="/" element={<LunchMenu />} />
                 <Route path="/reservations" element={<Reservations />} />
                 <Route path="/lunchMenu" element={<LunchMenu />} />
                 <Route path="/alacarte" element={<ALaCarte />} />
