@@ -40,8 +40,8 @@ function App() {
               activeMenu ? " md:ml-72 " : "flex-2 "
             }`}
           >
-            <div className="fixed md:static bg-main-bg dark:bg-dark-bg navbar w-full">
-              <Navbar />
+            <div className="fixed md:static bg-main-bg dark:bg-dark-bg navbar bg-gray-700 w-full">
+              <LunchMenu />
             </div>
           </div>
 
