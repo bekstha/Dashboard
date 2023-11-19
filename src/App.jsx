@@ -18,17 +18,6 @@ function App() {
     <div>
       <BrowserRouter>
         <div className="flex relative dark:bg-main-dark-bg">
-{/*           <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
-            <TooltipComponent content="Settings" position="Top">
-              <button
-                type="button"
-                className="text-3xl text-white p-3 hover:drop-shadow-xl hover:bg-light-gray"
-                style={{ background: "blue", borderRadius: "50%" }}
-              >
-                <FiSettings />
-              </button>
-            </TooltipComponent>
-          </div> */}
           {activeMenu ? (
             <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white">
               {" "}
@@ -47,13 +36,13 @@ function App() {
                 : 'bg-main-bg dark:bg-main-dark-bg  w-full min-h-screen flex-2 '
             }
           >
-            <div className="fixed md:static bg-main-bg dark:bg-dark-bg navbar bg-gray-700 w-full">
+            <div className="sticky top-0 bg-main-bg dark:bg-dark-bg navbar w-full">
               <Navbar />
             </div>
 
             <div className="p-4">
               <Routes>
-                <Route path="/" element={<Reservations />} />
+                <Route path="/" element={<LunchMenu />} />
                 <Route path="/reservations" element={<Reservations />} />
                 <Route path="/lunchMenu" element={<LunchMenu />} />
                 <Route path="/alacarte" element={<ALaCarte />} />
