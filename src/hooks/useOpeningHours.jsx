@@ -24,6 +24,7 @@ const useOpeningHours = () => {
 
   return {
     openingHours,
+    setOpeningHours,
   };
 };
 
