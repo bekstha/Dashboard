@@ -4,7 +4,7 @@ const inputClasses =
   "bg-gray-100 rounded-md py-1.5 px-2 w-full border-0 outline outline-1 outline-gray-600 focus:outline-blue-400 transition-all duration-100";
 
 const InputLabel = ({ label }) => (
-  <label className="block mb-1 text-md text-left">{label}</label>
+  <label className="block mb-1 text-md text-left w-24">{label}</label>
 );
 
 const Input = ({ type = "text", onChange, value, placeholder }) => (

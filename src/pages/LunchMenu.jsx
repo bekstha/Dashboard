@@ -9,7 +9,7 @@ const LunchMenu = () => {
 
   return (
     <div className="flex justify-center">
-      <div className='border w-4/5 m-5 bg-gray-200'>
+      <div className='border w-full m-5 bg-gray-200'>
         <div className='flex-col justify-center'>
           <div className='flex justify-between m-5 p-2'>
               <span className='font-bold text-3xl'>{today}</span>
