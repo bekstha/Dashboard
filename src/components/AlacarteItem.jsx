@@ -5,19 +5,27 @@ import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import useFoodMenu from "../hooks/useFoodMenu";
 import LoadingScreen from './LoadingScreen';
 
-const Item = ({itemId}) => {
+const AlaCarteItem = ({itemId}) => {
     const [lactose_free, setLactoseFree] = useState(true);
     const [gluten_free, setGlutenFree] = useState(true);
     const [nut_free, setNutFree] = useState(true);
-    const [days, setDay] = useState([]);
+    const [price, setPrice] = useState();
+    const [title, setTitle] = useState("");
+    const [dishType, setDishType] = useState("");
+    const [chicken_dish, setChicken] = useState("");
+    const [starter, setStarter] = useState("");
+    const [tandoor_dish, setTandoor] = useState("");
+    const [lamb_dish, setLamb] = useState("");
+    const [veg_dish, setVegetarian] = useState("");
+    const [vegan, setVegan] = useState("");
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
+
     const { lunchItem } = useFoodMenu();
 
     useEffect(() => {
         const filteredItem = lunchItem.find(item => item.id === itemId);
         if (filteredItem) {
-            setDay(filteredItem.days);
             setDescription(filteredItem.description);
             setLactoseFree(filteredItem.lactose_free);
             setGlutenFree(filteredItem.gluten_free);
@@ -25,40 +33,58 @@ const Item = ({itemId}) => {
           }
     }, [itemId, lunchItem]);
 
-    const handleDayChange = (e) => {
-        const inputValue = e.target.value;
-        // Assuming the input value is a comma-separated string, you can convert it to an array
-        const daysArray = inputValue.split(',').map(day => day.trim());
-        setDay(daysArray);
+    const handleDishTypeChange = (selectedDishType) => {
+        setChicken(selectedDishType === 'chicken_dish');
+        setStarter(selectedDishType === 'starter');
+        setTandoor(selectedDishType === 'tandoor_dish');
+        setVegetarian(selectedDishType === 'veg_dish');
+        setVegan(selectedDishType === 'vegan');
+        setLamb(selectedDishType === 'lamb_dish');
+
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             setLoading(true)
-            const lunchMenuCollection = collection(db, "LunchMenu");
+            const alaCarteCollection = collection(db, "A_La_Carte1");
 
             if(itemId) {
                 //Check if the item already exists in the collection
-                const existingItemRef = doc(lunchMenuCollection, itemId);
+                const existingItemRef = doc(alaCarteCollection, itemId);
                 const existingItem = await getDoc(existingItemRef);
 
                 if(existingItem.exists()) {
                     await updateDoc(existingItemRef, {
-                        days,
+                        title,
                         description,
+                        price,
                         lactose_free,
                         nut_free,
-                        gluten_free
+                        gluten_free,
+                        starter,
+                        chicken_dish,
+                        tandoor_dish,
+                        veg_dish,
+                        vegan,
+                        lamb_dish
                     });
                 }
             } else {
-                await addDoc(lunchMenuCollection, {
-                    days,
+                await addDoc(alaCarteCollection, {
+                    title,
                     description,
+                    price,
                     lactose_free,
                     nut_free,
-                    gluten_free
+                    gluten_free,
+                    starter,
+                    chicken_dish,
+                    tandoor_dish,
+                    veg_dish,
+                    vegan,
+                    lamb_dish
+
                 });
             }
 
@@ -67,7 +93,7 @@ const Item = ({itemId}) => {
 
         } finally {
             setLoading(false)
-            window.location.href = "./LunchMenu"
+            window.location.href = "./AlaCarte"
         }
     };
 
@@ -75,20 +101,17 @@ const Item = ({itemId}) => {
         <LoadingScreen />
         ) : (
         <div className='flex-col p-5 bg-slate-200 rounded-lg'>
-            <div className='flex justify-between text-2xl mb-5 font-medium'>
-                <span>Item</span>
-            </div>
             
             <div className='flex-col justify-between'>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-5">
-                        <InputLabel label="Day(s)" />
+                        <InputLabel label="Title" />
                         <Input
                             type="text"
                             className=""
-                            placeholder="Day"
-                            value={days}
-                            onChange={handleDayChange}
+                            placeholder="Title"
+                            value={title}
+                            onChange={e =>setTitle(e.target.value)}
                         />
                     </div>
                     <div className="mb-5">
@@ -100,6 +123,35 @@ const Item = ({itemId}) => {
                             value={description}
                             onChange={e =>setDescription(e.target.value)}
                         />
+                    </div>
+                    <div className="mb-5">
+                        <InputLabel label="Price" />
+                        <Input
+                            type="number"
+                            className=""
+                            placeholder="Price"
+                            value={price}
+                            onChange={e =>setPrice(e.target.value)}
+                        />
+                    </div>
+                    <div className="mb-5">
+                        <InputLabel label="Dish Type" />
+                        <select
+                            value={dishType}
+                            onChange={(e) => {
+                                const selectedDishType = e.target.value;
+                                setDishType(selectedDishType);
+                                handleDishTypeChange(selectedDishType);
+                              }}
+                            className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                            >
+                            <option value="chicken_dish">Chicken</option>
+                            <option value="lamb_dish">Lamb</option>
+                            <option value="starter">Starter</option>
+                            <option value="tandoor_dish">Tandoor</option>
+                            <option value="veg_dish">Vegetarian</option>
+                            <option value="vegan">Vegan</option>
+                        </select>
                     </div>
                     <div className='flex-col justify-between'>
                         <div className="sm:w-1/3">
@@ -164,4 +216,4 @@ const Item = ({itemId}) => {
     )
 };
 
-export default Item
+export default AlaCarteItem

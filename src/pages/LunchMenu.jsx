@@ -14,7 +14,6 @@ const LunchMenu = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const filteredMenu = lunchItem.filter(item => item.days.includes(day));
-  console.log("isOpen " + isOpen)
 
   const showModal = (item) => {
     setIsOpen(true);
