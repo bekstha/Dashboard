@@ -1,16 +1,17 @@
 import React, { useState, useEffect  } from 'react'
 import { Input, InputLabel, Textarea } from './Input';
 import { db } from "../config/firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import useFoodMenu from "../hooks/useFoodMenu";
+import LoadingScreen from './LoadingScreen';
 
-const Item = ({itemId}) => {
-    console.log(itemId)
+const Item = ({itemId, open, close}) => {
     const [lactose_free, setLactoseFree] = useState(true);
     const [gluten_free, setGlutenFree] = useState(true);
     const [nut_free, setNutFree] = useState(true);
-    const [day, setDay] = useState([]);
+    const [days, setDay] = useState([]);
     const [description, setDescription] = useState("");
+    const [loading, setLoading] = useState(false);
     const { lunchItem } = useFoodMenu();
 
     useEffect(() => {
@@ -22,28 +23,57 @@ const Item = ({itemId}) => {
             setGlutenFree(filteredItem.gluten_free);
             setNutFree(filteredItem.nut_free);
           }
-        console.log("items " + lactose_free)
     }, [itemId, lunchItem]);
+
+    const handleDayChange = (e) => {
+        const inputValue = e.target.value;
+        // Assuming the input value is a comma-separated string, you can convert it to an array
+        const daysArray = inputValue.split(',').map(day => day.trim());
+        setDay(daysArray);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-          const lunchMenuCollection = collection(db, "LunchMenu");
-          const lunchMenuRef = await addDoc(lunchMenuCollection, {
-            day,
-            description,
-            lactose_Free,
-            nut_Free,
-            gluten_Free
+            setLoading(true)
+            const lunchMenuCollection = collection(db, "LunchMenu");
 
-          });
+            if(itemId) {
+                //Check if the item already exists in the collection
+                const existingItemRef = doc(lunchMenuCollection, itemId);
+                const existingItem = await getDoc(existingItemRef);
+
+                if(existingItem.exists()) {
+                    await updateDoc(existingItemRef, {
+                        days,
+                        description,
+                        lactose_free,
+                        nut_free,
+                        gluten_free
+                    });
+                }
+            } else {
+                await addDoc(lunchMenuCollection, {
+                    days,
+                    description,
+                    lactose_free,
+                    nut_free,
+                    gluten_free
+                });
+            }
 
         } catch (error) {
           console.error("Error submitting form:", error);
+
+        } finally {
+            setLoading(false)
+            window.location.href = "./LunchMenu"
         }
     };
 
-    return (
+    return loading ? (
+        <LoadingScreen />
+        ) : (
         <div className='flex-col p-5 bg-slate-200 rounded-lg'>
             <div className='flex justify-between text-2xl mb-5 font-medium'>
                 <span>Item</span>
@@ -55,17 +85,17 @@ const Item = ({itemId}) => {
                         <InputLabel label="Day(s)" />
                         <Input
                             type="text"
-                            className="Day"
+                            className=""
                             placeholder="Day"
-                            value={day}
-                            onChange={e =>setDay(e.target.value)}
+                            value={days}
+                            onChange={handleDayChange}
                         />
                     </div>
                     <div className="mb-5">
                         <InputLabel label="Description" />
                         <Textarea
                             type="text"
-                            className="description"
+                            className=""
                             placeholder="Description"
                             value={description}
                             onChange={e =>setDescription(e.target.value)}
@@ -80,7 +110,7 @@ const Item = ({itemId}) => {
                                 <select
                                 value={gluten_free}
                                 onChange={e => setGlutenFree(e.target.value === 'true')}
-                                className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                                className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                                 >
                                 <option value="true">True</option>
                                 <option value="false">False</option>
@@ -120,14 +150,15 @@ const Item = ({itemId}) => {
                             </div>
                         </div>
                     </div>
-                </form>
-                <div className="flex justify-center mt-10">
+                    <div className="flex justify-center mt-10">
                     <button
                         type="submit"
-                        className="w-42 p-4 rounded-xl text-white font-bold bg-gray-500">
+                        className="w-42 p-4 rounded-xl text-white font-bold border-blue-600 bg-blue-600">
                         Save changes
                     </button>
-                </div>
+                    </div>
+                </form>
+
             </div>
         </div>
     )

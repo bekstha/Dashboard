@@ -1,7 +1,9 @@
 
 const ALaCarte = () => {
   return (
-    <div>ALaCarte</div>
+    <div>
+      
+    </div>
   )
 }
 

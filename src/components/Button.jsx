@@ -1,6 +1,6 @@
 import React from "react";
 
-const btnClasses = "w-36 md:w-48 text-lg rounded-md duration-200";
+const btnClasses = "w-32 md:w-32 text-lg rounded-md duration-200";
 
 const colors = {
   blue: "border-blue-600 bg-blue-600 hover:bg-blue-500 hover:border-blue-500",
@@ -10,7 +10,7 @@ const colors = {
 };
 
 const sizes = {
-  small: " p-1 text-sm",
+  small: " p-1 text-md",
   default: "p-3 text-sm",
   large: "px-5 py-2",
 };
@@ -45,9 +45,9 @@ const Button = ({
   return (
     <button
       title={title}
-      className={`border-2 ${btnClasses} ${colorClasses} ${sizeClasses} ${
+      className={`border-1 ${btnClasses} ${colorClasses} ${sizeClasses} ${
         outlined
-          ? "bg-transparent hover:bg-transparent hover:!text-orange-500"
+          ? "bg-transparent hover:bg-red-400 "
           : ""
       } ${className}`}
       onClick={() => onClick && onClick()}
