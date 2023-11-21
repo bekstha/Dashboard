@@ -17,14 +17,11 @@ const ALaCarte = () => {
 
   const Category = ({item, id}) => {
     return(
-      <div className="">
-          <button
-              onClick={() => handleItemClick(item, id)}
-              type="button"
-              className={`rounded-md font-bold text-medium p-2 border border-black ${selectedButton === id ? 'bg-green-500 text-white' : ''}`}>
-              {item}
-          </button>
-      </div>
+        <div
+            onClick={() => handleItemClick(item, id)}
+            className={`cursor-pointer rounded-md font-bold text-medium p-2 border border-black ${selectedButton === id ? 'bg-green-500 text-white' : ''}`}>
+            {item}
+        </div>
     )
   };
 
@@ -102,12 +99,11 @@ const ALaCarte = () => {
         <div className='flex-col justify-center '>
           <div className='flex justify-between m-5 p-2'>
             <div className="flex justify-between gap-10">
-            <button
+              <div
                 onClick={() => handleItemClick("Starters", 1)}
-                type="button"
-                className={`font-bold italic rounded-md text-medium p-2 border border-black ${selectedButton === 1 ? 'bg-green-500 text-white animate-wiggle' : ''}`}>
+                className={`cursor-pointer font-bold italic rounded-md text-medium p-2 border border-black ${selectedButton === 1 ? 'bg-green-500 text-white animate-wiggle' : ''}`}>
                   Starters
-              </button>
+              </div>
               <Category id="2" item="Vegetarian" />
               <Category id="3" item="Lamb" />
               <Category id="4" item="Chicken" />

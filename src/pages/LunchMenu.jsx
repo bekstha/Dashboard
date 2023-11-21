@@ -4,6 +4,7 @@ import useFoodMenu from "../hooks/useFoodMenu";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Item from "../components/LunchItem";
 import Button from "../components/Button";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const LunchMenu = () => {
   const [day, setDay] = useState("");
@@ -40,13 +41,10 @@ const LunchMenu = () => {
 
   const Category = ({item, id}) => {
     return(
-      <div className="">
-          <button
-              onClick={() => handleDayClick(item, id)}
-              type="button"
-              className={`rounded-md font-bold text-medium p-2 border border-black ${selectedButton === id ? 'bg-green-500 text-white' : ''}`}>
-              {item}
-          </button>
+      <div
+        onClick={() => handleDayClick(item, id)}
+        className={`cursor-pointer rounded-md font-bold text-medium h-fit p-2 border border-black ${selectedButton === id ? 'bg-green-500 text-white' : ''}`}>
+          {item}
       </div>
     )
   }
@@ -56,14 +54,22 @@ const LunchMenu = () => {
       <div className='border w-full m-5 bg-gray-200'>
 
         <div className='flex-col justify-center '>
-          <div className='flex justify-between m-5 p-2'>
-            <div className="flex justify-between gap-10">
+          <div className='flex justify-between justify-end m-5 p-2'>
             <button
+              type="button"
+              className="xl:hidden text-xl rounded-full p-2 hover:bg-light-gray"
+            >
+              <span
+                className="rounded-full h-2 w-2"
+              />
+              <MenuIcon />
+            </button>
+            <div className="xl:flex hidden justify-between gap-10">
+              <div
                 onClick={() => handleDayClick("Maanantai", 1)}
-                type="button"
-                className={`font-bold italic rounded-md text-medium p-2 border border-black ${selectedButton === 1 ? 'bg-green-500 text-white animate-wiggle' : ''}`}>
+                className={`cursor-pointer rounded-md font-bold text-medium h-fit p-2 border border-black ${selectedButton === 1 ? 'bg-green-500 text-white' : ''}`}>
                   Maanantai
-              </button>
+              </div>
               <Category id="2" item="Tiistai" />
               <Category id="3" item="Keskiviikko" />
               <Category id="4" item="Torstai" />
