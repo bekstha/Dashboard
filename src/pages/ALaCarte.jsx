@@ -29,9 +29,14 @@ const ALaCarte = () => {
   };
 
   const DishItems = ({dishName, index}) => {
+
+    const handleItemClick = () => {
+      showEditModal(dishName);
+    };
+
     return (
         <React.Fragment key={index}>
-            <div onClick={showEditModal(dishName)} className="bg-slate-100 p-3 mt-5 shadow-md rounded-lg">
+            <div onClick={handleItemClick} className="bg-slate-100 p-3 mt-5 shadow-md rounded-lg cursor-pointer">
                 <CardHeader dish={dishName.title} price={dishName.price + `\u20AC`} />
                 <hr className="border-orange-500" />
                 <p className="text-sm italic tracking-wide mt-2 mb-2"> 
@@ -57,7 +62,7 @@ const ALaCarte = () => {
               >
               {selectedItem && (
                 <div>
-                  <AlaCarteItem itemId={selectedItem.id} />
+                  <AlaCarteItem itemId={selectedItem.id} itemName={itemName} />
                 </div>
               )}
               </Modal>
@@ -72,6 +77,7 @@ const ALaCarte = () => {
   };
 
   const showEditModal = (item) => {
+    console.log(item)
     setIsEditOpen(true);
     setSelectedItem(item);
   };
@@ -154,12 +160,12 @@ const ALaCarte = () => {
 
           {itemName === "Chicken" &&
               chickenDish.map((chicken, index) => (
-                  <DishItems dishName={chicken} key={index} />
+                <DishItems dishName={chicken} key={index} />
           ))}
 
           {itemName === "Tandoor" &&
               tandoorDish.map((tandoor, index) => (
-                  <DishItems dishName={tandoor} key={index} />
+                <DishItems dishName={tandoor} key={index} />
           ))}
 
           {itemName === "Vegan" &&

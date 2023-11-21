@@ -10,6 +10,7 @@ function useFoodMenu() {
   const [tandoorDish, setTandoorDish] = useState([]);
   const [veganFood, setVeganFood] = useState([]);
   const [lunchItem, setLunchItem] = useState([]);
+  const [alaCarte, setAlaCarte] = useState([]);
 
   const lunchMenuRef = collection(db, "LunchMenu");
   const aLaCarteRef = collection(db, "A_La_Carte1");
@@ -40,6 +41,7 @@ function useFoodMenu() {
         ...doc.data(),
         id: doc.id,
       }));
+      setAlaCarte(filteredFood);
 
       // Filter food items where starter is true
       const startersOnly = filteredFood.filter((item) => item.starter === true);
@@ -78,7 +80,7 @@ function useFoodMenu() {
     }
   };
 
-  return { starters, chickenDish, lambDish, vegDish, tandoorDish, veganFood, lunchItem };
+  return { starters, chickenDish, lambDish, vegDish, tandoorDish, veganFood, lunchItem, alaCarte };
 }
 
 export default useFoodMenu;

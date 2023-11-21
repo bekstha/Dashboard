@@ -5,7 +5,8 @@ import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import useFoodMenu from "../hooks/useFoodMenu";
 import LoadingScreen from './LoadingScreen';
 
-const AlaCarteItem = ({itemId}) => {
+const AlaCarteItem = ({itemId, itemName}) => {
+    console.log(itemName)
     const [lactose_free, setLactoseFree] = useState(true);
     const [gluten_free, setGlutenFree] = useState(true);
     const [nut_free, setNutFree] = useState(true);
@@ -21,26 +22,38 @@ const AlaCarteItem = ({itemId}) => {
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { lunchItem } = useFoodMenu();
+    const { alaCarte } = useFoodMenu();
 
     useEffect(() => {
-        const filteredItem = lunchItem.find(item => item.id === itemId);
+        const filteredItem = alaCarte.find(item => item.id === itemId);
         if (filteredItem) {
+            setTitle(filteredItem.title);
             setDescription(filteredItem.description);
             setLactoseFree(filteredItem.lactose_free);
             setGlutenFree(filteredItem.gluten_free);
             setNutFree(filteredItem.nut_free);
+            setPrice(filteredItem.price);
+            setChicken(filteredItem.chicken_dish);
+            setStarter(filteredItem.starter);
+            setTandoor(filteredItem.tandoor_dish);
+            setVegetarian(filteredItem.veg_dish);
+            setVegan(filteredItem.vegan);
+            setLamb(filteredItem.lamb_dish);
+
+            if(chicken_dish === true) {
+                setDishType("chicken_dish")
+            }
           }
-    }, [itemId, lunchItem]);
+    }, [itemId, alaCarte]);
 
     const handleDishTypeChange = (selectedDishType) => {
+        console.log(selectedDishType)
         setChicken(selectedDishType === 'chicken_dish');
         setStarter(selectedDishType === 'starter');
         setTandoor(selectedDishType === 'tandoor_dish');
         setVegetarian(selectedDishType === 'veg_dish');
         setVegan(selectedDishType === 'vegan');
         setLamb(selectedDishType === 'lamb_dish');
-
     };
 
     const handleSubmit = async (event) => {

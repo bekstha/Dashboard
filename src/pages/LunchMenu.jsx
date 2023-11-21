@@ -100,10 +100,11 @@ const LunchMenu = () => {
           <hr className="border-orange-500" />
           {filteredMenu.map((item, index) => (
             <div 
+              onClick={() => showModal(item)}
               key={index} 
-              className="w-full bg-white p-2 mb-5 mt-5 shadow-md rounded-lg"
+              className="w-full bg-white p-2 mb-5 mt-5 shadow-md rounded-lg cursor-pointer"
             >
-              <button onClick={() => showModal(item)} className="text-medium italic tracking-wide p-3">{item.description}</button>
+              <p className="text-medium italic tracking-wide p-3">{item.description}</p>
               <Modal
                 open={isOpen}
                 onOk={hideModal}
