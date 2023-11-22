@@ -2,15 +2,14 @@ import React, { useState, useEffect  } from 'react'
 import { Input, InputLabel, Textarea } from './Input';
 import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
-import useFoodMenu from "../hooks/useFoodMenu";
+import useAlacarteMenu from "../hooks/useAlaCarteMenu";
 import LoadingScreen from './LoadingScreen';
 
-const AlaCarteItem = ({itemId, itemName}) => {
-    console.log(itemName)
+const AlaCarteItem = ({itemId}) => {
     const [lactose_free, setLactoseFree] = useState(true);
     const [gluten_free, setGlutenFree] = useState(true);
     const [nut_free, setNutFree] = useState(true);
-    const [price, setPrice] = useState();
+    const [price, setPrice] = useState("");
     const [title, setTitle] = useState("");
     const [dishType, setDishType] = useState("");
     const [chicken_dish, setChicken] = useState("");
@@ -22,11 +21,12 @@ const AlaCarteItem = ({itemId, itemName}) => {
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { alaCarte } = useFoodMenu();
+    const { alaCarte } = useAlacarteMenu();
 
     useEffect(() => {
         const filteredItem = alaCarte.find(item => item.id === itemId);
         if (filteredItem) {
+            console.log(filteredItem.price)
             setTitle(filteredItem.title);
             setDescription(filteredItem.description);
             setLactoseFree(filteredItem.lactose_free);
@@ -39,10 +39,6 @@ const AlaCarteItem = ({itemId, itemName}) => {
             setVegetarian(filteredItem.veg_dish);
             setVegan(filteredItem.vegan);
             setLamb(filteredItem.lamb_dish);
-
-            if(chicken_dish === true) {
-                setDishType("chicken_dish")
-            }
           }
     }, [itemId, alaCarte]);
 
@@ -60,7 +56,7 @@ const AlaCarteItem = ({itemId, itemName}) => {
         event.preventDefault();
         try {
             setLoading(true)
-            const alaCarteCollection = collection(db, "A_La_Carte1");
+            const alaCarteCollection = collection(db, "A_La_Carte");
 
             if(itemId) {
                 //Check if the item already exists in the collection
@@ -97,7 +93,6 @@ const AlaCarteItem = ({itemId, itemName}) => {
                     veg_dish,
                     vegan,
                     lamb_dish
-
                 });
             }
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
-import useFoodMenu from "../hooks/useFoodMenu";
+import useAlacarteMenu from "../hooks/useAlaCarteMenu";
 import CardHeader from "../components/CardHeader";
 import { Modal } from "antd";
 import Button from "../components/Button";
@@ -13,7 +13,7 @@ const ALaCarte = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const { starters, chickenDish, lambDish, vegDish, tandoorDish, veganFood } = useFoodMenu();
+  const { starters, chickenDish, lambDish, vegDish, tandoorDish, veganFood } = useAlacarteMenu();
 
   const Category = ({item, id}) => {
     return(
@@ -33,7 +33,7 @@ const ALaCarte = () => {
 
     return (
         <React.Fragment key={index}>
-            <div onClick={handleItemClick} className="bg-slate-100 p-3 mt-5 shadow-md rounded-lg cursor-pointer">
+            <div onClick={handleItemClick} className="bg-white p-3 mt-5 shadow-md rounded-lg cursor-pointer">
                 <CardHeader dish={dishName.title} price={dishName.price + `\u20AC`} />
                 <hr className="border-orange-500" />
                 <p className="text-sm italic tracking-wide mt-2 mb-2"> 
@@ -59,7 +59,7 @@ const ALaCarte = () => {
               >
               {selectedItem && (
                 <div>
-                  <AlaCarteItem itemId={selectedItem.id} itemName={itemName} />
+                  <AlaCarteItem itemId={selectedItem.id} />
                 </div>
               )}
               </Modal>
