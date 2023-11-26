@@ -15,6 +15,7 @@ function useAlacarteMenu() {
 
   useEffect(() => {
     console.log("Fetching food list...");
+    getFoodList()
   }, []);
 
   const getFoodList = async () => {
