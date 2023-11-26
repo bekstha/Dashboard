@@ -9,7 +9,7 @@ function useFoodMenu() {
 
   useEffect(() => {
     console.log("Fetching lunch list...");
-    getLunchList();
+    getLunchList()
   }, []);
 
 

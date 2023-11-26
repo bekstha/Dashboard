@@ -2,28 +2,25 @@ import React, { useState, useEffect  } from 'react'
 import { Input, InputLabel, Textarea } from './Input';
 import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
-import useFoodMenu from "../hooks/useFoodMenu";
 import LoadingScreen from './LoadingScreen';
 
-const Item = ({itemId}) => {
+const Item = ({itemId, itemName}) => {
     const [lactose_free, setLactoseFree] = useState(true);
     const [gluten_free, setGlutenFree] = useState(true);
     const [nut_free, setNutFree] = useState(true);
     const [days, setDay] = useState([]);
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
-    const { lunchItem } = useFoodMenu();
 
     useEffect(() => {
-        const filteredItem = lunchItem.find(item => item.id === itemId);
-        if (filteredItem) {
-            setDay(filteredItem.days);
-            setDescription(filteredItem.description);
-            setLactoseFree(filteredItem.lactose_free);
-            setGlutenFree(filteredItem.gluten_free);
-            setNutFree(filteredItem.nut_free);
+        if (itemId) {
+            setDay(itemName.days);
+            setDescription(itemName.description);
+            setLactoseFree(itemName.lactose_free);
+            setGlutenFree(itemName.gluten_free);
+            setNutFree(itemName.nut_free);
           }
-    }, [itemId, lunchItem]);
+    }, [itemId]);
 
     const handleDayChange = (e) => {
         const inputValue = e.target.value;
@@ -39,19 +36,15 @@ const Item = ({itemId}) => {
             const lunchMenuCollection = collection(db, "LunchMenu");
 
             if(itemId) {
-                //Check if the item already exists in the collection
-                const existingItemRef = doc(lunchMenuCollection, itemId);
-                const existingItem = await getDoc(existingItemRef);
+                const lunchMenuRef = doc(lunchMenuCollection, itemId);
 
-                if(existingItem.exists()) {
-                    await updateDoc(existingItemRef, {
-                        days,
-                        description,
-                        lactose_free,
-                        nut_free,
-                        gluten_free
-                    });
-                }
+                await updateDoc(lunchMenuRef, {
+                    days,
+                    description,
+                    lactose_free,
+                    nut_free,
+                    gluten_free
+                });
             } else {
                 await addDoc(lunchMenuCollection, {
                     days,

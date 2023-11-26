@@ -6,6 +6,8 @@ import CardHeader from "../components/CardHeader";
 import { Modal } from "antd";
 import Button from "../components/Button";
 import AlaCarteItem from "../components/AlacarteItem";
+import { IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const ALaCarte = () => {
   const [itemName, setItemName] = useState("");
@@ -13,13 +15,15 @@ const ALaCarte = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [openLeft, setOpenLeft] = useState(false)
+  const [screenSize, setScreenSize] = useState();
   const { starters, chickenDish, lambDish, vegDish, tandoorDish, veganFood } = useAlacarteMenu();
 
   const Category = ({item, id}) => {
     return(
         <div
             onClick={() => handleItemClick(item, id)}
-            className={`cursor-pointer rounded-md font-bold text-medium p-2 border border-black ${selectedButton === id ? 'bg-green-500 text-white' : ''}`}>
+            className={`cursor-pointer rounded-md xl:mb-0 mb-5 font-bold h-fit text-medium p-2 border border-black ${selectedButton === id ? 'bg-green-500 text-white' : ''}`}>
             {item}
         </div>
     )
@@ -29,43 +33,61 @@ const ALaCarte = () => {
 
     const handleItemClick = () => {
       showEditModal(dishName);
-    };
-
+    }
     return (
-        <React.Fragment key={index}>
-            <div onClick={handleItemClick} className="bg-white p-3 mt-5 shadow-md rounded-lg cursor-pointer">
-                <CardHeader dish={dishName.title} price={dishName.price + `\u20AC`} />
-                <hr className="border-orange-500" />
-                <p className="text-sm italic tracking-wide mt-2 mb-2"> 
-                  {dishName.description}
-                </p>
-            </div>
-            <Modal
-                open={isEditOpen}
-                onOk={hideEditModal}
-                onCancel={hideEditModal}
-                title="Edit Item"
-                width={700}
-                footer={() => (
-                  <Button
-                      size="small"
-                      outlined
-                      className="!text-black flex-1 border-gray-600"
-                      onClick={hideEditModal}
-                    >
-                      Cancel
-                    </Button>
-                )}
-              >
-              {selectedItem && (
-                <div>
-                  <AlaCarteItem itemId={selectedItem.id} />
-                </div>
+      <React.Fragment key={index}>
+          <div onClick={handleItemClick} className="bg-white p-3 mt-5 shadow-md rounded-lg cursor-pointer">
+              <CardHeader dish={dishName.title} price={dishName.price + `\u20AC`} />
+              <hr className="border-orange-500" />
+              <p className="text-sm italic tracking-wide mt-2 mb-2"> 
+                {dishName.description}
+              </p>
+          </div>
+          <Modal
+              open={isEditOpen}
+              onOk={hideEditModal}
+              onCancel={hideEditModal}
+              title="Edit Item"
+              width={700}
+              footer={() => (
+                <Button
+                  size="small"
+                  outlined
+                  className="!text-black flex-1 border-gray-600"
+                  onClick={hideEditModal}
+                >
+                  Cancel
+                </Button>
               )}
-              </Modal>
-        </React.Fragment>
+            >
+            {selectedItem && (
+              <div>
+                <AlaCarteItem itemId={selectedItem.id} itemName={selectedItem} />
+              </div>
+            )}
+          </Modal>
+      </React.Fragment>
     )
   };
+
+  const toggleDrawer = () => {
+    setOpenLeft(!openLeft)
+  }
+
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    handleResize()
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  useEffect(() => {
+    if(screenSize >= 1280){
+      setOpenLeft(false)
+    }
+  }, [screenSize])
+
 
   const handleItemClick = (item, id) => {
     // Handle the card click event here
@@ -94,14 +116,29 @@ const ALaCarte = () => {
   return (
     <div className="flex justify-center">
       
-      <div className='border w-full m-5 bg-gray-200'>
-
-        <div className='flex-col justify-center '>
-          <div className='flex justify-between m-5 p-2'>
-            <div className="flex justify-between gap-10">
+      <div className='relative border w-full m-5 bg-slate-100'>
+      {openLeft && (
+          <div className="absolute bg-slate-300 items-center w-48 h-full rounded-lg">
+            <IconButton className="absolute" variant="text" color="blue-gray" onClick={toggleDrawer}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="h-6 w-6 absolute left-44 bg-white rounded-lg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </IconButton>
+            <div className="flex-col p-5">
               <div
                 onClick={() => handleItemClick("Starters", 1)}
-                className={`cursor-pointer font-bold italic rounded-md text-medium p-2 border border-black ${selectedButton === 1 ? 'bg-green-500 text-white animate-wiggle' : ''}`}>
+                className={`cursor-pointer rounded-md font-bold text-medium h-fit mb-5 p-2 border border-black ${selectedButton === 1 ? 'bg-green-500 text-white' : ''}`}>
                   Starters
               </div>
               <Category id="2" item="Vegetarian" />
@@ -113,7 +150,41 @@ const ALaCarte = () => {
             </div>
             <button 
               onClick={() => showAddModal()}
-              className="flex items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg">
+              className="xl:flex hidden items-center gap-4 text-xl shadow-2xl p-1 bg-white">
+              <IoAddCircleOutline />
+               Add new menu
+            </button>
+          </div>
+        )}
+
+        <div className='flex-col justify-center '>
+          <div className='flex justify-between m-5 p-2'>
+          <button
+              onClick={toggleDrawer}
+              type="button"
+              className="xl:hidden text-xl rounded-full p-2 hover:bg-light-gray"
+            >
+              <span
+                className="rounded-full h-2 w-2"
+              />
+              <MenuIcon />
+            </button>
+            <div className="xl:flex hidden gap-8">
+              <div
+                onClick={() => handleItemClick("Starters", 1)}
+                className={`cursor-pointer font-bold italic rounded-md h-fit text-medium p-2 border border-black ${selectedButton === 1 ? 'bg-green-500 text-white animate-wiggle' : ''}`}>
+                  Starters
+              </div>
+              <Category id="2" item="Vegetarian" />
+              <Category id="3" item="Lamb" />
+              <Category id="4" item="Chicken" />
+              <Category id="5" item="Tandoor" />
+              <Category id="6" item="Vegan" />
+              <Category id="7" item="Drinks" />
+            </div>
+            <button 
+              onClick={() => showAddModal()}
+              className="xl:flex hidden items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg">
                 <IoAddCircleOutline />
                Add new Item
             </button>

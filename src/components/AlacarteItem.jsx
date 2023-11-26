@@ -2,10 +2,9 @@ import React, { useState, useEffect  } from 'react'
 import { Input, InputLabel, Textarea } from './Input';
 import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
-import useAlacarteMenu from "../hooks/useAlaCarteMenu";
 import LoadingScreen from './LoadingScreen';
 
-const AlaCarteItem = ({itemId}) => {
+const AlaCarteItem = ({itemId, itemName}) => {
     const [lactose_free, setLactoseFree] = useState(true);
     const [gluten_free, setGlutenFree] = useState(true);
     const [nut_free, setNutFree] = useState(true);
@@ -21,26 +20,23 @@ const AlaCarteItem = ({itemId}) => {
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { alaCarte } = useAlacarteMenu();
 
     useEffect(() => {
-        const filteredItem = alaCarte.find(item => item.id === itemId);
-        if (filteredItem) {
-            console.log(filteredItem.price)
-            setTitle(filteredItem.title);
-            setDescription(filteredItem.description);
-            setLactoseFree(filteredItem.lactose_free);
-            setGlutenFree(filteredItem.gluten_free);
-            setNutFree(filteredItem.nut_free);
-            setPrice(filteredItem.price);
-            setChicken(filteredItem.chicken_dish);
-            setStarter(filteredItem.starter);
-            setTandoor(filteredItem.tandoor_dish);
-            setVegetarian(filteredItem.veg_dish);
-            setVegan(filteredItem.vegan);
-            setLamb(filteredItem.lamb_dish);
+        if (itemId) {
+            setTitle(itemName.title);
+            setDescription(itemName.description);
+            setLactoseFree(itemName.lactose_free);
+            setGlutenFree(itemName.gluten_free);
+            setNutFree(itemName.nut_free);
+            setPrice(itemName.price);
+            setChicken(itemName.chicken_dish);
+            setStarter(itemName.starter);
+            setTandoor(itemName.tandoor_dish);
+            setVegetarian(itemName.veg_dish);
+            setVegan(itemName.vegan);
+            setLamb(itemName.lamb_dish);
           }
-    }, [itemId, alaCarte]);
+    }, [itemId]);
 
     const handleDishTypeChange = (selectedDishType) => {
         console.log(selectedDishType)
@@ -59,26 +55,21 @@ const AlaCarteItem = ({itemId}) => {
             const alaCarteCollection = collection(db, "A_La_Carte");
 
             if(itemId) {
-                //Check if the item already exists in the collection
-                const existingItemRef = doc(alaCarteCollection, itemId);
-                const existingItem = await getDoc(existingItemRef);
-
-                if(existingItem.exists()) {
-                    await updateDoc(existingItemRef, {
-                        title,
-                        description,
-                        price,
-                        lactose_free,
-                        nut_free,
-                        gluten_free,
-                        starter,
-                        chicken_dish,
-                        tandoor_dish,
-                        veg_dish,
-                        vegan,
-                        lamb_dish
-                    });
-                }
+                const alaCarteDocRef = doc(alaCarteCollection, itemId);
+                await updateDoc(alaCarteDocRef, {
+                    title,
+                    description,
+                    price,
+                    lactose_free,
+                    nut_free,
+                    gluten_free,
+                    starter,
+                    chicken_dish,
+                    tandoor_dish,
+                    veg_dish,
+                    vegan,
+                    lamb_dish
+                });
             } else {
                 await addDoc(alaCarteCollection, {
                     title,

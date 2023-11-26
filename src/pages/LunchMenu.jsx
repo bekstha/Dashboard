@@ -5,7 +5,7 @@ import { IoAddCircleOutline } from "react-icons/io5";
 import Item from "../components/LunchItem";
 import Button from "../components/Button";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Drawer, IconButton } from "@mui/material"
+import { IconButton } from "@mui/material"
 
 const LunchMenu = () => {
   const [day, setDay] = useState("");
@@ -15,6 +15,7 @@ const LunchMenu = () => {
   const { lunchItem } = useFoodMenu();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [openLeft, setOpenLeft] = useState(false)
+  const [screenSize, setScreenSize] = useState();
 
   const filteredMenu = lunchItem.filter(item => item.days.includes(day));
 
@@ -41,6 +42,20 @@ const LunchMenu = () => {
   };
 
   useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    handleResize()
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  useEffect(() => {
+    if(screenSize >= 1280){
+      setOpenLeft(false)
+    }
+  }, [screenSize])
+
+  useEffect(() => {
     handleDayClick("Maanantai", 1)
   }, []);
 
@@ -50,19 +65,17 @@ const LunchMenu = () => {
         onClick={() => 
           handleDayClick(item, id)
         }
-        className={`cursor-pointer rounded-md font-bold text-medium h-fit mb-5 p-2 border border-black ${selectedButton === id ? 'bg-green-500 text-white' : ''}`}>
+        className={`cursor-pointer rounded-md font-bold xl:mb-0 mb-5 text-medium h-fit p-2 border border-black ${selectedButton === id ? 'bg-green-500 text-white' : ''}`}>
           {item}
       </div>
     )
   };
 
-  console.log(openLeft)
   return (
     <div className="flex justify-center">
-      
-      <div className='relative border w-full m-5 bg-gray-200'>
+      <div className='relative border w-full m-5 bg-slate-100'>
         {openLeft && (
-          <div className="absolute bg-slate-600 items-center w-48 h-full">
+          <div className="absolute bg-slate-300 items-center w-48 h-full rounded-lg">
             <IconButton className="absolute" variant="text" color="blue-gray" onClick={toggleDrawer}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +113,7 @@ const LunchMenu = () => {
         )}
 
         <div className='flex-col justify-center '>
-          <div className='flex justify-between  m-5 p-2'>
+          <div className='flex justify-between m-5 p-2'>
             <button
               onClick={toggleDrawer}
               type="button"
@@ -124,7 +137,7 @@ const LunchMenu = () => {
             </div>
             <button 
               onClick={() => showAddModal()}
-              className="xl:flex hidden items-center gap-4 text-xl shadow-2xl p-2 bg-white">
+              className="xl:flex hidden  h-fit items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg">
               <IoAddCircleOutline />
                Add new menu
             </button>
@@ -176,7 +189,7 @@ const LunchMenu = () => {
               >
               {selectedItem && (
                 <div>
-                  <Item itemId={selectedItem.id} />
+                  <Item itemId={selectedItem.id} itemName={selectedItem} />
                 </div>
               )}
               </Modal>
