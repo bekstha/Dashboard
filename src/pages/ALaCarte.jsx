@@ -17,7 +17,8 @@ const ALaCarte = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [openLeft, setOpenLeft] = useState(false)
   const [screenSize, setScreenSize] = useState();
-  const { starters, chickenDish, lambDish, vegDish, tandoorDish, veganFood, alaCarte } = useAlacarteMenu();
+  const { alaCarte, deleteAlaCarte } = useAlacarteMenu();
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const Category = ({item, id}) => {
     return(
@@ -27,6 +28,21 @@ const ALaCarte = () => {
             {item}
         </div>
     )
+  };
+
+  const hideDeleteModal = () => setIsDeleteModalVisible(false);
+
+  const removeAlacarte = async (id) => {
+    console.log(id)
+    Modal.confirm({
+      title: "Confirm Delete",
+      content: "Are you sure you want to delete this Item?",
+      okButtonProps: { className: "bg-green-500 text-white" },
+      onOk: () => {
+        deleteAlaCarte(id);
+      },
+      onCancel: hideDeleteModal,
+    });
   };
 
   const DishItems = ({dishName, index}) => {
@@ -54,7 +70,7 @@ const ALaCarte = () => {
                   </button>
                   <button
                     className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md text-xs"
-                    onClick={() => console.log("Edit clicked")}
+                    onClick={() => removeAlacarte(dishName.id)}
                   >
                     Delete
                   </button>

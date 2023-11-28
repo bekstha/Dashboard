@@ -9,13 +9,13 @@ const Item = ({itemId, itemName}) => {
     const [lactose_free, setLactoseFree] = useState(true);
     const [gluten_free, setGlutenFree] = useState(true);
     const [nut_free, setNutFree] = useState(true);
-    const [days, setDay] = useState([]);
+    const [day, setDay] = useState([]);
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (itemId) {
-            setDay(itemName.days);
+            setDay(itemName.day);
             setDescription(itemName.description);
             setLactoseFree(itemName.lactose_free);
             setGlutenFree(itemName.gluten_free);
@@ -40,7 +40,7 @@ const Item = ({itemId, itemName}) => {
                 const lunchMenuRef = doc(lunchMenuCollection, itemId);
 
                 await updateDoc(lunchMenuRef, {
-                    days,
+                    day,
                     description,
                     lactose_free,
                     nut_free,
@@ -48,7 +48,7 @@ const Item = ({itemId, itemName}) => {
                 });
             } else {
                 await addDoc(lunchMenuCollection, {
-                    days,
+                    day,
                     description,
                     lactose_free,
                     nut_free,
@@ -80,7 +80,7 @@ const Item = ({itemId, itemName}) => {
                             type="text"
                             className=""
                             placeholder="Day"
-                            value={days}
+                            value={day}
                             onChange={handleDayChange}
                         />
                     </div>

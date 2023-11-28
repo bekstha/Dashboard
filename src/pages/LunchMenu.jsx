@@ -18,7 +18,7 @@ const LunchMenu = () => {
   const [screenSize, setScreenSize] = useState();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const filteredMenu = lunchItem.filter(item => item.days.includes(day));
+  const filteredMenu = lunchItem.filter(item => item.day.includes(day));
 
   const toggleDrawer = () => {setOpenLeft(!openLeft)};
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
