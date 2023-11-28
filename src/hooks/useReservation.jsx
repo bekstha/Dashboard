@@ -1,28 +1,38 @@
 import { useState, useEffect } from "react";
 import { db } from "../config/firebase";
-import { getDocs, collection } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  query,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 
 const useReservation = () => {
   const [reservations, setReservations] = useState([]);
   const reservationInfo = collection(db, "Reservations");
 
   useEffect(() => {
-    const getReservation = async () => {
-      try {
-        const data = await getDocs(reservationInfo);
-        const filteredData = data.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setReservations(filteredData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getReservation();
+    const q = query(collection(db, "Reservations"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      let reservationArr = [];
+      querySnapshot.forEach((doc) => {
+        reservationArr.push({ ...doc.data(), id: doc.id });
+      });
+      setReservations(reservationArr);
+    });
+    return () => unsubscribe();
   }, []);
+  const deleteReservation = async (id) => {
+    try {
+      await deleteDoc(doc(db, "Reservations", id));
+    } catch (error) {
+      console.error("Error deleting Reservation:", error);
+      throw error;
+    }
+  };
 
-  return { reservations, setReservations };
+  return { reservations, deleteReservation };
 };
 
 export default useReservation;
