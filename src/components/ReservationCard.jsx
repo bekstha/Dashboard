@@ -95,7 +95,6 @@ const ReservationCard = ({ reservations = [] }) => {
     <table className="table-fixed min-w-full bg-white border border-gray-300">
       <thead>
         <tr>
-          <TableHeader label="Date" />
           <TableHeader label="Time" />
           <TableHeader label="Pax" />
           <TableHeader label="Name" />
@@ -107,7 +106,6 @@ const ReservationCard = ({ reservations = [] }) => {
       <tbody>
         {reservations?.map((item) => (
           <tr key={item.id}>
-            <TableContent label={item.reservationDate} />
             <TableContent label={item.reservationTime} />
             <TableContent label={item.guestCount} />
             <TableContent label={`${item.firstname} ${item.lastname}`} />
@@ -189,15 +187,6 @@ const ReservationCard = ({ reservations = [] }) => {
               />
             </div>
             <div className="mt-2 flex items-center justify-between gap-4">
-              <div className="flex-1">
-                <InputLabel label="Date" />
-                <Input
-                  type="date"
-                  name="reservationDate"
-                  defaultValue={reservationById[0]?.reservationDate}
-                  onChange={handleInputChange}
-                />
-              </div>
               <div className="flex-1">
                 <InputLabel label="Time" />
                 <Input
