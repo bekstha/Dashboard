@@ -17,7 +17,7 @@ const ALaCarte = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [openLeft, setOpenLeft] = useState(false)
   const [screenSize, setScreenSize] = useState();
-  const { starters, chickenDish, lambDish, vegDish, tandoorDish, veganFood } = useAlacarteMenu();
+  const { starters, chickenDish, lambDish, vegDish, tandoorDish, veganFood, alaCarte } = useAlacarteMenu();
 
   const Category = ({item, id}) => {
     return(
@@ -30,49 +30,41 @@ const ALaCarte = () => {
   };
 
   const DishItems = ({dishName, index}) => {
-
     const handleItemClick = () => {
       showEditModal(dishName);
     }
     return (
       <React.Fragment key={index}>
-          <div onClick={handleItemClick} className="bg-white p-3 mt-5 shadow-md rounded-lg cursor-pointer">
-              <CardHeader dish={dishName.title} price={dishName.price + `\u20AC`} />
-              <hr className="border-orange-500" />
-              <p className="text-sm italic tracking-wide mt-2 mb-2"> 
-                {dishName.description}
-              </p>
-          </div>
-          <Modal
-              open={isEditOpen}
-              onOk={hideEditModal}
-              onCancel={hideEditModal}
-              title="Edit Item"
-              width={700}
-              footer={() => (
-                <Button
-                  size="small"
-                  outlined
-                  className="!text-black flex-1 border-gray-600"
-                  onClick={hideEditModal}
-                >
-                  Cancel
-                </Button>
-              )}
-            >
-            {selectedItem && (
-              <div>
-                <AlaCarteItem itemId={selectedItem.id} itemName={selectedItem} />
+          <div 
+            className="sm:flex justify-between items-center gap-10 w-full bg-white p-3 mt-5 shadow-md rounded-lg"
+          >
+              <div className="sm:w-5/6">
+                <CardHeader dish={dishName.title} price={dishName.price + `\u20AC`} />
+                <hr className="border-orange-500" />
+                <p className="text-sm italic tracking-wide mt-2 mb-2"> 
+                  {dishName.description}
+                </p>
               </div>
-            )}
-          </Modal>
+              <div className="flex justify-items-center">
+                  <button
+                    className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8 rounded-md text-xs"
+                    onClick={handleItemClick} 
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md text-xs"
+                    onClick={() => console.log("Edit clicked")}
+                  >
+                    Delete
+                  </button>
+              </div>
+          </div>
       </React.Fragment>
     )
   };
 
-  const toggleDrawer = () => {
-    setOpenLeft(!openLeft)
-  }
+  const toggleDrawer = () => {setOpenLeft(!openLeft)}
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth)
@@ -90,13 +82,12 @@ const ALaCarte = () => {
 
 
   const handleItemClick = (item, id) => {
-    // Handle the card click event here
+    // Handle the card click event
     setSelectedButton(id);
     setItemName(item);
   };
 
   const showEditModal = (item) => {
-    console.log(item)
     setIsEditOpen(true);
     setSelectedItem(item);
   };
@@ -115,7 +106,6 @@ const ALaCarte = () => {
 
   return (
     <div className="flex justify-center">
-      
       <div className='relative border w-full m-5 bg-slate-100'>
       {openLeft && (
           <div className="absolute bg-slate-300 items-center w-48 h-full rounded-lg">
@@ -210,35 +200,59 @@ const ALaCarte = () => {
               </Modal>
           </div>
           <div className='m-5 rounded-lg p-3 '>
-          {itemName === "Starters" &&
-            starters.map((starter, index) => (
-            <DishItems dishName={starter} key={index} />
-          ))}
+            {itemName === "Starters" &&
+              alaCarte.filter((item) => item.starter === true).map((starter, index) => (
+              <DishItems dishName={starter} key={index} />
+            ))}
 
-          {itemName === "Vegetarian" &&
-              vegDish.map((veg, index) => (
-              <DishItems dishName={veg} key={index} />
-          ))}
+            {itemName === "Vegetarian" &&
+                alaCarte.filter((item) => item.veg_dish === true).map((veg, index) => (
+                <DishItems dishName={veg} key={index} />
+            ))}
 
-          {itemName === "Lamb" &&
-              lambDish.map((lamb, index) => (
-                  <DishItems dishName={lamb} key={index} />
-          ))}
+            {itemName === "Lamb" &&
+                alaCarte.filter((item) => item.lamb_dish === true).map((lamb, index) => (
+                    <DishItems dishName={lamb} key={index} />
+            ))}
 
-          {itemName === "Chicken" &&
-              chickenDish.map((chicken, index) => (
-                <DishItems dishName={chicken} key={index} />
-          ))}
+            {itemName === "Chicken" &&
+                alaCarte.filter((item) => item.chicken_dish === true).map((chicken, index) => (
+                  <DishItems dishName={chicken} key={index} />
+            ))}
 
-          {itemName === "Tandoor" &&
-              tandoorDish.map((tandoor, index) => (
-                <DishItems dishName={tandoor} key={index} />
-          ))}
+            {itemName === "Tandoor" &&
+                alaCarte.filter((item) => item.tandoor_dish === true).map((tandoor, index) => (
+                  <DishItems dishName={tandoor} key={index} />
+            ))}
 
-          {itemName === "Vegan" &&
-              veganFood.map((veganfood, index) => (
-                  <DishItems dishName={veganfood} key={index} />
-          ))}
+            {itemName === "Vegan" &&
+                alaCarte.filter((item) => item.vegan === true).map((veganfood, index) => (
+                    <DishItems dishName={veganfood} key={index} />
+            ))}
+            
+          <Modal
+              open={isEditOpen}
+              onOk={hideEditModal}
+              onCancel={hideEditModal}
+              title="Edit Item"
+              width={700}
+              footer={() => (
+                <Button
+                  size="small"
+                  outlined
+                  className="!text-black flex-1 border-gray-600"
+                  onClick={hideEditModal}
+                >
+                  Cancel
+                </Button>
+              )}
+            >
+            {selectedItem && (
+              <div>
+                <AlaCarteItem itemId={selectedItem.id} itemName={selectedItem} />
+              </div>
+            )}
+          </Modal>
           </div>
         </div>
       </div>

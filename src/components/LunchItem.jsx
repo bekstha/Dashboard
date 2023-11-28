@@ -3,6 +3,7 @@ import { Input, InputLabel, Textarea } from './Input';
 import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import LoadingScreen from './LoadingScreen';
+import useFoodMenu from '../hooks/useFoodMenu';
 
 const Item = ({itemId, itemName}) => {
     const [lactose_free, setLactoseFree] = useState(true);
@@ -60,7 +61,6 @@ const Item = ({itemId, itemName}) => {
 
         } finally {
             setLoading(false)
-            window.location.href = "./LunchMenu"
         }
     };
 

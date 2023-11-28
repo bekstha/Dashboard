@@ -13,21 +13,37 @@ const SpecialMenu = ({}) => {
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+    const { specialMenu, deleteSpecial } = useSpecialMenu();
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
     const showAddModal = () => setIsAddOpen(true);
     const hideAddModal = () => setIsAddOpen(false);
 
+    const hideDeleteModal = () => setIsDeleteModalVisible(false);
+
     const showEditModel = (item) => {
         setIsEditOpen(true);
         setSelectedItem(item);
-      };
+    };
     
-      const hideEditModal = () => {
+    const hideEditModal = () => {
         setIsEditOpen(false);
         setSelectedItem(null);
-      };
+    };
 
-    const { specialMenu } = useSpecialMenu();
+    const removeItem = async (id) => {
+        console.log(id)
+        Modal.confirm({
+        title: "Confirm Delete",
+        content: "Are you sure you want to delete this Item?",
+        okButtonProps: { className: "bg-green-500 text-white" },
+        onOk: () => {
+            deleteSpecial(id);
+        },
+        onCancel: hideDeleteModal,
+        });
+    };
+
 
     return(
         <div className='flex justify-center'>
@@ -63,9 +79,23 @@ const SpecialMenu = ({}) => {
                 {specialMenu.map((item, index) => (
                     <div 
                         key={index} 
-                        className="w-full bg-white p-2 mb-5 mt-5 shadow-md rounded-lg cursor-pointer"
+                        className="sm:flex w-full justify-between items-center bg-white p-2 mb-5 mt-5 shadow-md rounded-lg"
                     >
-                        <p onClick={() => showEditModel(item)} className="text-medium italic tracking-wide p-3">{item.title} {item.day}</p>
+                        <p className="text-medium italic tracking-wide p-3">{item.title} {item.day}</p>
+                        <div className="flex justify-items-center p-3">
+                            <button
+                                className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8  rounded-md text-xs"
+                                onClick={() => showEditModel(item)}
+                            >
+                                Edit
+                            </button>
+                            <button
+                                className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md text-xs"
+                                onClick={() => removeItem(item.id)}
+                            >
+                                Delete
+                            </button>
+                        </div>
                         <Modal
                         open={isEditOpen}
                         onOk={hideEditModal}
