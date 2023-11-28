@@ -3,6 +3,7 @@ import { db } from "../config/firebase";
 import { useState } from "react";
 import { Button, Modal } from "antd";
 import { InputLabel, Input } from "./Input";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const TableHeader = ({ label }) => (
   <th className="py-2 px-4 border-b ">{label}</th>
@@ -114,20 +115,20 @@ const ReservationCard = ({ reservations = [] }) => {
             <TableContent label={item.phoneNumber} />
             <TableContent
               label={
-                <>
+                <div className="flex">
                   <button
                     className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
                     onClick={() => modifyReservation(item.id, item)}
                   >
-                    Edit
+                    <EditOutlined className="mr-1" />
                   </button>
                   <button
                     className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
                     onClick={() => removeReservation(item.id)}
                   >
-                    Delete
+                    <DeleteOutlined className="mr-1" />
                   </button>
-                </>
+                </div>
               }
             />
           </tr>
