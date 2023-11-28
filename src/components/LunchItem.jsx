@@ -3,6 +3,7 @@ import { Input, InputLabel, Textarea } from "./Input";
 import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
+import useFoodMenu from "../hooks/useFoodMenu";
 
 const Item = ({ itemId, itemName }) => {
   const [lactose_free, setLactoseFree] = useState(true);
@@ -66,10 +67,6 @@ const Item = ({ itemId, itemName }) => {
     <LoadingScreen />
   ) : (
     <div className="flex-col p-5 bg-slate-200 rounded-lg">
-      <div className="flex justify-between text-2xl mb-5 font-medium">
-        <span>Item</span>
-      </div>
-
       <div className="flex-col justify-between">
         <form onSubmit={handleSubmit}>
           <div className="mb-5">

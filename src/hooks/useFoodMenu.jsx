@@ -1,34 +1,33 @@
 import { useEffect, useState } from "react";
 import { db } from "../config/firebase";
-import { getDocs, collection } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, query } from "firebase/firestore";
 
 function useFoodMenu() {
   const [lunchItem, setLunchItem] = useState([]);
 
-  const lunchMenuRef = collection(db, "LunchMenu");
-
   useEffect(() => {
-    console.log("Fetching lunch list...");
-    getLunchList()
+    const q = query(collection(db,"LunchMenu"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      let lunchArr = [];
+      querySnapshot.forEach((doc) => {
+        lunchArr.push({ ...doc.data(), id: doc.id });
+      });
+      setLunchItem(lunchArr);
+    });
+    return () => unsubscribe();
   }, []);
 
-
-  const getLunchList = async () => {
+  const deleteLunch = async (lunchId) => {
     try {
-      const food = await getDocs(lunchMenuRef);
-      const filteredFood = food.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setLunchItem(filteredFood)
-
+      await deleteDoc(doc(db, "LunchMenu", lunchId));
     } catch (error) {
-      console.error(error);
+      console.error("Error deleting Lunch Item:", error);
+      throw error;
     }
   };
 
 
-  return { lunchItem };
+  return { lunchItem, deleteLunch };
 }
 
 export default useFoodMenu;
