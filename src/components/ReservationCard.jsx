@@ -3,6 +3,7 @@ import { db } from "../config/firebase";
 import { useState } from "react";
 import { Button, Modal } from "antd";
 import { InputLabel, Input } from "./Input";
+import useReservation from "../hooks/useReservation";
 
 const TableHeader = ({ label }) => (
   <th className="py-2 px-4 border-b ">{label}</th>
@@ -14,6 +15,8 @@ const TableContent = ({ label }) => (
 const ReservationCard = ({ reservations = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedID, setSelectedID] = useState();
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const { deleteReservation } = useReservation();
   const [state, setState] = useState({
     firstname: "",
     lastname: "",
@@ -38,6 +41,21 @@ const ReservationCard = ({ reservations = [] }) => {
   const isValidPhoneNumber = (value) => /^\+?[1-9]\d{1,14}$/.test(value);
   const isValidNumber = (value) => /^\d+$/.test(value);
 
+  const hideDeleteModal = () => setIsDeleteModalVisible(false);
+
+  const removeReservation = async (id) => {
+    console.log(id);
+    Modal.confirm({
+      title: "Confirm Delete",
+      content: "Are you sure you want to delete this Item?",
+      okButtonProps: { className: "bg-green-500 text-white" },
+      onOk: () => {
+        deleteReservation(id);
+      },
+      onCancel: hideDeleteModal,
+    });
+  };
+
   const validateForm = () => {
     if (
       !isNotEmpty(firstname) ||
@@ -53,10 +71,6 @@ const ReservationCard = ({ reservations = [] }) => {
   };
   const handleInputChange = (event) =>
     setState({ ...state, [event.target.name]: event.target.value });
-
-  const removeReservation = async (id) => {
-    await deleteDoc(doc(db, "Reservations", id));
-  };
 
   const modifyReservation = async (id) => {
     setIsOpen(true);
