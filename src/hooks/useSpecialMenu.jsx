@@ -1,29 +1,32 @@
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, query, onSnapshot } from 'firebase/firestore';
 import { db } from "../config/firebase";
 import React, { useEffect, useState } from 'react';
 
 export const useSpecialMenu = () => {
     const [specialMenu, setSpecialMenu] = useState([]);
-    const specialMenuRef = collection(db, "SpecialMenu");
 
     useEffect(() => {
-        getSpecialMenu();
+      const q = query(collection(db,"SpecialMenu"));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        let specialArr = [];
+        querySnapshot.forEach((doc) => {
+          specialArr.push({ ...doc.data(), id: doc.id });
+        });
+        setSpecialMenu(specialArr);
+      });
+      return () => unsubscribe();
     }, []);
-    
-      const getSpecialMenu = async () => {
-        try {
-          const food = await getDocs(specialMenuRef);
-          const filteredFood = food.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
-          setSpecialMenu(filteredFood)
-    
-        } catch (error) {
-          console.error(error);
-        }
-      };
-  return { specialMenu }
+
+    const deleteSpecial = async (id) => {
+      try {
+        await deleteDoc(doc(db, "SpecialMenu", id));
+      } catch (error) {
+        console.error("Error deleting dish Item:", error);
+        throw error;
+      }
+    };
+
+  return { specialMenu, deleteSpecial }
 };
 
 export default useSpecialMenu

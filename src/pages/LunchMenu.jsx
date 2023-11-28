@@ -12,16 +12,18 @@ const LunchMenu = () => {
   const [selectedButton, setSelectedButton] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const { lunchItem } = useFoodMenu();
+  const { lunchItem, deleteLunch } = useFoodMenu();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [openLeft, setOpenLeft] = useState(false);
   const [screenSize, setScreenSize] = useState();
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const filteredMenu = lunchItem.filter((item) => item.day.includes(day));
 
   const toggleDrawer = () => {
     setOpenLeft(!openLeft);
   };
+  const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
   const showModal = (item) => {
     setIsOpen(true);
@@ -58,6 +60,19 @@ const LunchMenu = () => {
   useEffect(() => {
     handleDayClick("Maanantai", 1);
   }, []);
+
+  const removeLunchItem = async (id) => {
+    console.log(id);
+    Modal.confirm({
+      title: "Confirm Delete",
+      content: "Are you sure you want to delete this Item?",
+      okButtonProps: { className: "bg-green-500 text-white" },
+      onOk: () => {
+        deleteLunch(id);
+      },
+      onCancel: hideDeleteModal,
+    });
+  };
 
   const Category = ({ item, id }) => {
     return (
@@ -179,39 +194,50 @@ const LunchMenu = () => {
             {filteredMenu.map((item, index) => (
               <div
                 key={index}
-                className="w-full bg-white p-2 mb-5 mt-5 shadow-md rounded-lg cursor-pointer"
+                className="sm:flex justify-between items-center w-full bg-white p-2 mb-5 mt-5 shadow-md rounded-lg"
               >
-                <p
-                  onClick={() => showModal(item)}
-                  className="text-medium italic tracking-wide p-3"
-                >
+                <p className="text-medium italic tracking-wide p-3">
                   {item.description}
                 </p>
-                <Modal
-                  open={isOpen}
-                  onOk={hideModal}
-                  onCancel={hideModal}
-                  title="Edit Item"
-                  width={700}
-                  footer={() => (
-                    <Button
-                      size="small"
-                      outlined
-                      className="!text-black flex-1 border-gray-600"
-                      onClick={hideModal}
-                    >
-                      Cancel
-                    </Button>
-                  )}
-                >
-                  {selectedItem && (
-                    <div>
-                      <Item itemId={selectedItem.id} itemName={selectedItem} />
-                    </div>
-                  )}
-                </Modal>
+                <div className="flex justify-items-center p-3">
+                  <button
+                    className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8  rounded-md text-xs"
+                    onClick={() => showModal(item)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md text-xs"
+                    onClick={() => removeLunchItem(item.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
+            <Modal
+              open={isOpen}
+              onOk={hideModal}
+              onCancel={hideModal}
+              title="Edit Item"
+              width={700}
+              footer={() => (
+                <Button
+                  size="small"
+                  outlined
+                  className="!text-black border-gray-600"
+                  onClick={hideModal}
+                >
+                  Cancel
+                </Button>
+              )}
+            >
+              {selectedItem && (
+                <div>
+                  <Item itemId={selectedItem.id} itemName={selectedItem} />
+                </div>
+              )}
+            </Modal>
           </div>
         </div>
       </div>
