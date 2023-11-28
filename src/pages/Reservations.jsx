@@ -19,15 +19,18 @@ const Reservations = () => {
   const handleDateSelect = (date) => {
     setSelectedDate(date);
   };
-  const sortedReservations = [...reservations].sort(
-    (a, b) => new Date(a.reservationDate) - new Date(b.reservationDate)
-  );
+
   const displayDate = selectedDate
     ? selectedDate.format("YYYY-MM-DD")
     : moment().format("YYYY-MM-DD");
-  const filteredReservations = [...reservations].filter(
-    (reservation) => reservation.reservationDate === displayDate
-  );
+
+  const filteredAndSortedReservations = [...reservations]
+    .filter((reservation) => reservation.reservationDate === displayDate)
+    .sort((a, b) => {
+      const timeA = a.reservationTime;
+      const timeB = b.reservationTime;
+      return timeA.localeCompare(timeB);
+    });
 
   return loading ? (
     <LoadingScreen />
@@ -40,7 +43,9 @@ const Reservations = () => {
           <p className="ml-3">{displayDate}</p>
         </div>
       </div>
-      {!loading && <ReservationCard reservations={filteredReservations} />}
+      {!loading && (
+        <ReservationCard reservations={filteredAndSortedReservations} />
+      )}
     </div>
   );
 };
