@@ -81,11 +81,8 @@ const ReservationCard = ({ reservations = [] }) => {
   const handleReservationSubmit = async (event) => {
     event.preventDefault();
     try {
-      const reservationCollection = collection(db, "Reservations");
-      const reservationRef = doc(reservationCollection);
-
-      await setDoc(reservationRef, {
-        id: selectedID,
+      console.log({ selectedID });
+      await updateDoc(doc(db, "Reservations", selectedID), {
         firstname,
         lastname,
         email,
@@ -106,7 +103,7 @@ const ReservationCard = ({ reservations = [] }) => {
   );
 
   return (
-    <table className="table-fixed min-w-full bg-white border border-gray-300">
+    <table className="table-fixed min-w-full bg-white border border-gray-300 lg:text-lg text-xs">
       <thead>
         <tr>
           <TableHeader label="Time" />
@@ -114,6 +111,8 @@ const ReservationCard = ({ reservations = [] }) => {
           <TableHeader label="Name" />
           <TableHeader label="Email" />
           <TableHeader label="Phone number" />
+          <TableHeader label="Status" />
+          <TableHeader label="Decision" />
           <TableHeader label="Actions" />
         </tr>
       </thead>
@@ -125,6 +124,25 @@ const ReservationCard = ({ reservations = [] }) => {
             <TableContent label={`${item.firstname} ${item.lastname}`} />
             <TableContent label={item.email} />
             <TableContent label={item.phoneNumber} />
+            <TableContent label={item.status} />
+            <TableContent
+              label={
+                <div className="flex">
+                  <a
+                    href={`http://localhost:5174/reservation/${item.id}/decline`}
+                    className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
+                  >
+                    Decline
+                  </a>
+                  <a
+                    href={`http://localhost:5174/reservation/${item.id}/approve`}
+                    className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
+                  >
+                    Approve
+                  </a>
+                </div>
+              }
+            />
             <TableContent
               label={
                 <div className="flex">
@@ -154,7 +172,7 @@ const ReservationCard = ({ reservations = [] }) => {
                 <Input
                   placeholder="John"
                   name="firstname"
-                  defaultValue={reservationById[0]?.firstname}
+                  value={firstname || reservationById[0]?.firstname}
                   onChange={handleInputChange}
                 />
               </div>
@@ -163,7 +181,7 @@ const ReservationCard = ({ reservations = [] }) => {
                 <Input
                   placeholder="Doe"
                   name="lastname"
-                  defaultValue={reservationById[0]?.lastname}
+                  value={lastname || reservationById[0]?.lastname}
                   onChange={handleInputChange}
                 />
               </div>
@@ -174,7 +192,7 @@ const ReservationCard = ({ reservations = [] }) => {
                 type="email"
                 placeholder="example@mail.com"
                 name="email"
-                defaultValue={reservationById[0]?.email}
+                value={email || reservationById[0]?.email}
                 onChange={handleInputChange}
               />
             </div>
@@ -184,7 +202,7 @@ const ReservationCard = ({ reservations = [] }) => {
                 type="tel"
                 placeholder="+358411103121"
                 name="phoneNumber"
-                defaultValue={reservationById[0]?.phoneNumber}
+                value={phoneNumber || reservationById[0]?.phoneNumber}
                 onChange={handleInputChange}
               />
             </div>
@@ -196,7 +214,7 @@ const ReservationCard = ({ reservations = [] }) => {
                 min="1"
                 max="14"
                 name="guestCount"
-                defaultValue={reservationById[0]?.guestCount}
+                value={guestCount || reservationById[0]?.guestCount}
                 onChange={handleInputChange}
               />
             </div>
@@ -206,12 +224,15 @@ const ReservationCard = ({ reservations = [] }) => {
                 <Input
                   type="time"
                   name="reservationTime"
-                  defaultValue={reservationById[0]?.reservationTime}
+                  value={reservationTime || reservationById[0]?.reservationTime}
                   onChange={handleInputChange}
                 />
               </div>
             </div>
-            <Button className="md:w-full w-full mt-8">
+            <Button
+              onClick={(event) => handleReservationSubmit(event)}
+              className="md:w-full w-full mt-8"
+            >
               Submit Reservation
             </Button>
           </form>

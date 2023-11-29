@@ -12,13 +12,6 @@ const Item = ({ itemId, itemName }) => {
   const [day, setDay] = useState([]);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-const Item = ({ itemId, itemName }) => {
-  const [lactose_free, setLactoseFree] = useState(true);
-  const [gluten_free, setGlutenFree] = useState(true);
-  const [nut_free, setNutFree] = useState(true);
-  const [day, setDay] = useState([]);
-  const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (itemId) {
