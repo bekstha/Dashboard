@@ -6,8 +6,6 @@ import CardHeader from "../components/CardHeader";
 import { Modal } from "antd";
 import Button from "../components/Button";
 import AlaCarteItem from "../components/AlacarteItem";
-import { IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 
 const ALaCarte = () => {
   const [itemName, setItemName] = useState("");
@@ -15,17 +13,16 @@ const ALaCarte = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [openLeft, setOpenLeft] = useState(false);
-  const [screenSize, setScreenSize] = useState();
   const { alaCarte, deleteAlaCarte } = useAlacarteMenu();
+  const [dishName, setDishName] = useState("");
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const Category = ({ item, id }) => {
     return (
       <div
         onClick={() => handleItemClick(item, id)}
-        className={`cursor-pointer rounded-md xl:mb-0 mb-5 font-bold h-fit text-medium p-2 border border-black ${
-          selectedButton === id ? "bg-green-500 text-white" : ""
+        className={`cursor-pointer rounded-md font-bold h-fit text-medium p-2 border border-black ${
+          dishName === item ? "bg-green-500 text-white" : ""
         }`}
       >
         {item}
@@ -84,27 +81,9 @@ const ALaCarte = () => {
     );
   };
 
-  const toggleDrawer = () => {
-    setOpenLeft(!openLeft);
-  };
-
-  useEffect(() => {
-    const handleResize = () => setScreenSize(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (screenSize >= 1280) {
-      setOpenLeft(false);
-    }
-  }, [screenSize]);
-
-  const handleItemClick = (item, id) => {
+  const handleItemClick = (item) => {
     // Handle the card click event
-    setSelectedButton(id);
+    setDishName(item);
     setItemName(item);
   };
 
@@ -122,96 +101,30 @@ const ALaCarte = () => {
   const hideAddModal = () => setIsAddOpen(false);
 
   useEffect(() => {
-    handleItemClick("Starters", 1);
+    handleItemClick("Starters");
   }, []);
 
   return (
     <div className="flex justify-center">
       <div className="relative border w-full m-5 bg-slate-100">
-        {openLeft && (
-          <div className="absolute bg-slate-300 items-center w-48 h-full rounded-lg">
-            <IconButton
-              className="absolute"
-              variant="text"
-              color="blue-gray"
-              onClick={toggleDrawer}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="h-6 w-6 absolute left-44 bg-white rounded-lg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </IconButton>
-            <div className="flex-col p-5">
-              <div
-                onClick={() => handleItemClick("Starters", 1)}
-                className={`cursor-pointer rounded-md font-bold text-medium h-fit mb-5 p-2 border border-black ${
-                  selectedButton === 1 ? "bg-green-500 text-white" : ""
-                }`}
-              >
-                Starters
-              </div>
-              <Category id="2" item="Vegetarian" />
-              <Category id="3" item="Lamb" />
-              <Category id="4" item="Chicken" />
-              <Category id="5" item="Tandoor" />
-              <Category id="6" item="Vegan" />
-              <Category id="7" item="Drinks" />
-            </div>
-            <button
-              onClick={() => showAddModal()}
-              className="xl:flex hidden items-center gap-4 text-xl shadow-2xl p-1 bg-white"
-            >
-              <IoAddCircleOutline />
-              Add new menu
-            </button>
-          </div>
-        )}
-
         <div className="flex-col justify-center ">
-          <div className="flex justify-between m-5 p-2">
-            <button
-              onClick={toggleDrawer}
-              type="button"
-              className="xl:hidden text-xl rounded-full p-2 hover:bg-light-gray"
-            >
-              <span className="rounded-full h-2 w-2" />
-              <MenuIcon />
-            </button>
-            <div className="xl:flex hidden gap-8">
-              <div
-                onClick={() => handleItemClick("Starters", 1)}
-                className={`cursor-pointer font-bold italic rounded-md h-fit text-medium p-2 border border-black ${
-                  selectedButton === 1
-                    ? "bg-green-500 text-white animate-wiggle"
-                    : ""
-                }`}
-              >
-                Starters
-              </div>
-              <Category id="2" item="Vegetarian" />
-              <Category id="3" item="Lamb" />
-              <Category id="4" item="Chicken" />
-              <Category id="5" item="Tandoor" />
-              <Category id="6" item="Vegan" />
-              <Category id="7" item="Drinks" />
+          <div className="flex justify-between p-3 m-5 gap-8 overflow-x-auto scrollbar-hide">
+            <div className="flex gap-8">
+              <Category item="Starters" />
+              <Category item="Vegetarian" />
+              <Category item="Lamb" />
+              <Category item="Chicken" />
+              <Category item="Tandoor" />
+              <Category item="Vegan" />
+              <Category item="Drinks" />
             </div>
-            <button
+            <div
               onClick={() => showAddModal()}
-              className="xl:flex hidden items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg"
+              className="flex items-center gap-4 min-w-fit h-fit text-xl hover:shadow-2xl p-2 bg-white rounded-lg"
             >
               <IoAddCircleOutline />
               Add new Item
-            </button>
+            </div>
             <Modal
               open={isAddOpen}
               onOk={hideAddModal}
@@ -233,7 +146,7 @@ const ALaCarte = () => {
               <AlaCarteItem />
             </Modal>
           </div>
-          <div className="m-5 rounded-lg p-3 ">
+          <div className="m-5 rounded-lg p-3">
             {itemName === "Starters" &&
               alaCarte
                 .filter((item) => item.starter === true)
@@ -272,7 +185,7 @@ const ALaCarte = () => {
                 .filter((item) => item.vegan === true)
                 .map((veganfood, index) => (
                   <DishItems dishName={veganfood} key={index} />
-                ))}
+            ))}
 
             <Modal
               open={isEditOpen}

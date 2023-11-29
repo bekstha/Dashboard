@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Input, InputLabel, Textarea } from "./Input";
 import { db } from "../config/firebase";
-import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
-import useFoodMenu from "../hooks/useFoodMenu";
+import { Checkbox } from 'antd';
+
 
 const Item = ({ itemId, itemName }) => {
   const [lactose_free, setLactoseFree] = useState(true);
@@ -12,6 +13,10 @@ const Item = ({ itemId, itemName }) => {
   const [day, setDay] = useState([]);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const plainOptions = ['Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai'];
+
+ 
 
   useEffect(() => {
     if (itemId) {
@@ -71,6 +76,7 @@ const Item = ({ itemId, itemName }) => {
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <InputLabel label="Day(s)" />
+            <Checkbox.Group options={plainOptions} defaultValue={['']} onChange={setDay}  />
             <Input
               type="text"
               className=""

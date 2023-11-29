@@ -4,25 +4,19 @@ import useFoodMenu from "../hooks/useFoodMenu";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Item from "../components/LunchItem";
 import Button from "../components/Button";
-import MenuIcon from "@mui/icons-material/Menu";
-import { IconButton } from "@mui/material";
+
 
 const LunchMenu = () => {
   const [day, setDay] = useState("");
-  const [selectedButton, setSelectedButton] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const { lunchItem, deleteLunch } = useFoodMenu();
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [openLeft, setOpenLeft] = useState(false);
-  const [screenSize, setScreenSize] = useState();
+  const [dishName, setDishName] = useState("");
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const filteredMenu = lunchItem.filter((item) => item.day.includes(day));
 
-  const toggleDrawer = () => {
-    setOpenLeft(!openLeft);
-  };
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
   const showModal = (item) => {
@@ -38,27 +32,13 @@ const LunchMenu = () => {
   const showAddModal = () => setIsAddOpen(true);
   const hideAddModal = () => setIsAddOpen(false);
 
-  const handleDayClick = (name, id) => {
-    setSelectedButton(id);
+  const handleDayClick = (name) => {
+    setDishName(name);
     setDay(name);
   };
 
   useEffect(() => {
-    const handleResize = () => setScreenSize(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (screenSize >= 1280) {
-      setOpenLeft(false);
-    }
-  }, [screenSize]);
-
-  useEffect(() => {
-    handleDayClick("Maanantai", 1);
+    handleDayClick("Maanantai");
   }, []);
 
   const removeLunchItem = async (id) => {
@@ -74,12 +54,12 @@ const LunchMenu = () => {
     });
   };
 
-  const Category = ({ item, id }) => {
+  const Category = ({ item }) => {
     return (
       <div
-        onClick={() => handleDayClick(item, id)}
-        className={`cursor-pointer rounded-md font-bold xl:mb-0 mb-5 text-medium h-fit p-2 border border-black ${
-          selectedButton === id ? "bg-green-500 text-white" : ""
+        onClick={() => handleDayClick(item)}
+        className={`cursor-pointer rounded-md font-bold text-medium h-fit p-2 border border-black ${
+          dishName === item ? "bg-green-500 text-white" : ""
         }`}
       >
         {item}
@@ -89,85 +69,24 @@ const LunchMenu = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="relative border w-full m-5 bg-slate-100">
-        {openLeft && (
-          <div className="absolute bg-slate-300 items-center w-48 h-full rounded-lg">
-            <IconButton
-              className="absolute"
-              variant="text"
-              color="blue-gray"
-              onClick={toggleDrawer}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="h-6 w-6 absolute left-44 bg-white rounded-lg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </IconButton>
-            <div className="flex-col p-5">
-              <div
-                onClick={() => handleDayClick("Maanantai", 1)}
-                className={`cursor-pointer rounded-md font-bold text-medium h-fit mb-5 p-2 border border-black ${
-                  selectedButton === 1 ? "bg-green-500 text-white" : ""
-                }`}
-              >
-                Maanantai
-              </div>
-              <Category id="2" item="Tiistai" />
-              <Category id="3" item="Keskiviikko" />
-              <Category id="4" item="Torstai" />
-              <Category id="5" item="Perjantai" />
-            </div>
-            <button
-              onClick={() => showAddModal()}
-              className="flex justify-center items-center font-bold rounded-md ml-2 gap-2 text-md shadow-2xl p-4 bg-slate-600 border border-black"
-            >
-              <IoAddCircleOutline />
-              Add new menu
-            </button>
-          </div>
-        )}
-
+      <div className="border w-full m-5 bg-slate-100">
         <div className="flex-col justify-center ">
-          <div className="flex justify-between m-5 p-2">
-            <button
-              onClick={toggleDrawer}
-              type="button"
-              className="xl:hidden text-xl rounded-full p-2 hover:bg-light-gray"
-            >
-              <span className="rounded-full h-2 w-2" />
-              <MenuIcon />
-            </button>
-            <div className="xl:flex hidden gap-10">
-              <div
-                onClick={() => handleDayClick("Maanantai", 1)}
-                className={`cursor-pointer rounded-md font-bold text-medium h-fit p-2 border border-black ${
-                  selectedButton === 1 ? "bg-green-500 text-white" : ""
-                }`}
-              >
-                Maanantai
-              </div>
-              <Category id="2" item="Tiistai" />
-              <Category id="3" item="Keskiviikko" />
-              <Category id="4" item="Torstai" />
-              <Category id="5" item="Perjantai" />
+          <div className="relative flex justify-between items-center m-5 p-3 gap-10 overflow-x-auto scrollbar-hide">
+
+            <div className="flex gap-10">
+              <Category item="Maanantai" />
+              <Category item="Tiistai" />
+              <Category item="Keskiviikko" />
+              <Category item="Torstai" />
+              <Category item="Perjantai" />
             </div>
-            <button
+            <div
               onClick={() => showAddModal()}
-              className="xl:flex hidden  h-fit items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg"
+              className="flex cursor-pointer min-w-fit items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg"
             >
               <IoAddCircleOutline />
               Add new menu
-            </button>
+            </div>
             <Modal
               open={isAddOpen}
               onOk={hideAddModal}

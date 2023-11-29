@@ -1,8 +1,4 @@
 import React, { useState } from 'react'
-import { Input, InputLabel } from '../components/Input';
-import LoadingScreen from '../components/LoadingScreen';
-import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
-import { db } from "../config/firebase";
 import { IoAddCircleOutline } from 'react-icons/io5';
 import Button from "../components/Button";
 import Modal from 'antd/es/modal/Modal';
@@ -48,10 +44,10 @@ const SpecialMenu = ({}) => {
     return(
         <div className='flex justify-center'>
             <div className='border w-full m-5 p-3 bg-slate-100'>
-                <div className="xl:flex hidden gap-10 justify-between">
+                <div className="flex gap-10 justify-between">
                     <button 
                     onClick={() => showAddModal()}
-                    className="xl:flex border hidden h-fit items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg">
+                    className="flex border h-fit items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg">
                     <IoAddCircleOutline />
                     Add special menu
                     </button>
