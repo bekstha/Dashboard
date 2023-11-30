@@ -5,7 +5,6 @@ import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
 import { Checkbox } from 'antd';
 
-
 const Item = ({ itemId, itemName }) => {
   const [lactose_free, setLactoseFree] = useState(true);
   const [gluten_free, setGlutenFree] = useState(true);
@@ -15,8 +14,7 @@ const Item = ({ itemId, itemName }) => {
   const [loading, setLoading] = useState(false);
 
   const plainOptions = ['Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai'];
-
- 
+  const isDaySelected = (selectedDay) => day.includes(selectedDay);
 
   useEffect(() => {
     if (itemId) {
@@ -75,8 +73,8 @@ const Item = ({ itemId, itemName }) => {
       <div className="flex-col justify-between">
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
-            <InputLabel label="Day(s)" />
-            <Checkbox.Group options={plainOptions} defaultValue={['']} onChange={setDay}  />
+            <InputLabel label="Choose Day(s)" />
+            <Checkbox.Group options={plainOptions} value={day} onChange={(checkedDays) => setDay(checkedDays)}  />
             <Input
               type="text"
               className=""
