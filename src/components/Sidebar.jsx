@@ -4,9 +4,32 @@ import { MdOutlineCancel } from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { links } from "../utils/Links";
 import { useStateContext } from "../contexts/ContextProvider";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { signOut as firebaseSignOut } from "firebase/auth";
+import useSignIn from "../hooks/authHooks";
+import { message } from "antd";
+import { useMainContext } from "../contexts/MainContextProvider";
 
 const Sidebar = () => {
   const { activeMenu, setActiveMenu, screenSize } = useStateContext();
+  const { setAdminStatus } = useMainContext();
+
+
+  const { loading, error, signOut } = useSignIn();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setAdminStatus(false);
+
+      // Perform any additional actions after sign out if needed
+      message.success("User signed out successfully");
+    } catch (error) {
+      console.error("Sign out error:", error.message);
+      message.error(error.message);
+    }
+    console.log("signed out clicked")
+  };
 
   const handleCloseSideBar = () => {
     if (activeMenu && screenSize <= 900) {
@@ -20,9 +43,9 @@ const Sidebar = () => {
     "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-slate-500 text-md m-2";
 
   return (
-    <div className="h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 bg-blue-950 rounded-r-xl">
+    <div className="h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10 bg-blue-950 rounded-r-xl flex">
       {activeMenu && (
-        <>
+        <div>
           <div className="flex justify-center items-center">
             <Link
               to="/"
@@ -65,7 +88,17 @@ const Sidebar = () => {
               </div>
             ))}
           </div>
-        </>
+
+          <div className="my-96">
+            <button
+              className="flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-slate-500 text-md m-2 cursor-pointer"
+              onClick={handleSignOut}
+            >
+              <LogoutIcon />
+              Log Out
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

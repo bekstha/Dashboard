@@ -62,7 +62,7 @@ const Navbar = () => {
             className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
             onClick={() => handleClick("userProfile")}
           >
-            <img src="../assets/avatar.png" className="rounded-full h-8 w-8" />
+            <img src="/avatar.png" className="rounded-full h-8 w-8" />
             <p>
               <span>Admin</span>
             </p>
