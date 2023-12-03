@@ -19,6 +19,7 @@ const AlaCarteItem = ({ itemId, itemName }) => {
   const [vegan, setVegan] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
 
   useEffect(() => {
     if (itemId) {
@@ -34,8 +35,48 @@ const AlaCarteItem = ({ itemId, itemName }) => {
       setVegetarian(itemName.veg_dish);
       setVegan(itemName.vegan);
       setLamb(itemName.lamb_dish);
+    } else {
+      setIsFormDirty(true);
     }
   }, [itemId]);
+
+  useEffect(() => {
+    if (itemId) {
+      const isDirty = [
+        title !== itemName.title,
+        description !== itemName.description,
+        lactose_free !== itemName.lactose_free,
+        gluten_free !== itemName.gluten_free,
+        nut_free !== itemName.nut_free,
+        price !== itemName.price,
+        chicken_dish !== itemName.chicken_dish,
+        starter !== itemName.starter,
+        tandoor_dish !== itemName.tandoor_dish,
+        lamb_dish !== itemName.lamb_dish,
+        veg_dish !== itemName.veg_dish,
+        vegan !== itemName.vegan,
+      ].some(Boolean);
+      setIsFormDirty(isDirty);
+    }
+  }, [
+    title,
+    description,
+    lactose_free,
+    gluten_free,
+    nut_free,
+    price,
+    chicken_dish,
+    starter,
+    tandoor_dish,
+    lamb_dish,
+    veg_dish,
+    vegan,
+    itemName,
+  ]);
+
+  const isSubmitDisabled = () => {
+    return !isFormDirty;
+  };
 
   const handleDishTypeChange = (selectedDishType) => {
     console.log(selectedDishType);
@@ -46,6 +87,8 @@ const AlaCarteItem = ({ itemId, itemName }) => {
     setVegan(selectedDishType === "vegan");
     setLamb(selectedDishType === "lamb_dish");
   };
+
+  console.log(isFormDirty);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -200,7 +243,12 @@ const AlaCarteItem = ({ itemId, itemName }) => {
           <div className="flex justify-center mt-10">
             <button
               type="submit"
-              className="w-42 p-4 rounded-xl text-white font-bold border-blue-600 bg-blue-600"
+              className={`w-42 p-4 rounded-xl text-white font-bold border-blue-600 ${
+                isSubmitDisabled()
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-blue-600"
+              }`}
+              disabled={isSubmitDisabled()}
             >
               Save changes
             </button>

@@ -6,6 +6,7 @@ import CardHeader from "../components/CardHeader";
 import { Modal } from "antd";
 import Button from "../components/Button";
 import AlaCarteItem from "../components/AlacarteItem";
+import LoadingScreen from "../components/LoadingScreen";
 
 const ALaCarte = () => {
   const [itemName, setItemName] = useState("");
@@ -15,6 +16,7 @@ const ALaCarte = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const { alaCarte, deleteAlaCarte } = useAlacarteMenu();
   const [dishName, setDishName] = useState("");
+  const [loading, setLoading] = useState(true);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const Category = ({ item, id }) => {
@@ -29,6 +31,12 @@ const ALaCarte = () => {
       </div>
     );
   };
+
+  useEffect(() => {
+    if (alaCarte.length > 0) {
+      setLoading(false);
+    }
+  }, [alaCarte]);
 
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
@@ -46,7 +54,7 @@ const ALaCarte = () => {
   };
 
   const DishItems = ({ dishName, index }) => {
-    const handleItemClick = () => {
+    const handleEditClick = () => {
       showEditModal(dishName);
     };
     return (
@@ -65,7 +73,7 @@ const ALaCarte = () => {
           <div className="flex justify-items-center">
             <button
               className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8 rounded-md text-xs"
-              onClick={handleItemClick}
+              onClick={handleEditClick}
             >
               Edit
             </button>
@@ -104,7 +112,25 @@ const ALaCarte = () => {
     handleItemClick("Starters");
   }, []);
 
-  return (
+  const itemFilters = {
+    Starters: "starter",
+    Vegetarian: "veg_dish",
+    Lamb: "lamb_dish",
+    Chicken: "chicken_dish",
+    Tandoor: "tandoor_dish",
+    Vegan: "vegan",
+    Drinks: "drinks",
+  };
+
+  const filteredItems = alaCarte
+    .filter((item) => item[itemFilters[itemName]])
+    .map((filteredItem, index) => (
+      <DishItems dishName={filteredItem} key={index} />
+    ));
+
+  return loading ? (
+    <LoadingScreen />
+  ) : (
     <div className="flex justify-center">
       <div className="relative border w-full m-5 bg-slate-100">
         <div className="flex-col justify-center ">
@@ -120,7 +146,7 @@ const ALaCarte = () => {
             </div>
             <div
               onClick={() => showAddModal()}
-              className="flex items-center gap-4 min-w-fit h-fit text-xl hover:shadow-2xl p-2 bg-white rounded-lg"
+              className="flex items-center gap-4 min-w-fit h-fit text-xl hover:shadow-2xl p-2 bg-white rounded-lg cursor-pointer"
             >
               <IoAddCircleOutline />
               Add new Item
@@ -147,46 +173,13 @@ const ALaCarte = () => {
             </Modal>
           </div>
           <div className="m-5 rounded-lg p-3">
-            {itemName === "Starters" &&
-              alaCarte
-                .filter((item) => item.starter === true)
-                .map((starter, index) => (
-                  <DishItems dishName={starter} key={index} />
-                ))}
-
-            {itemName === "Vegetarian" &&
-              alaCarte
-                .filter((item) => item.veg_dish === true)
-                .map((veg, index) => <DishItems dishName={veg} key={index} />)}
-
-            {itemName === "Lamb" &&
-              alaCarte
-                .filter((item) => item.lamb_dish === true)
-                .map((lamb, index) => (
-                  <DishItems dishName={lamb} key={index} />
-                ))}
-
-            {itemName === "Chicken" &&
-              alaCarte
-                .filter((item) => item.chicken_dish === true)
-                .map((chicken, index) => (
-                  <DishItems dishName={chicken} key={index} />
-                ))}
-
-            {itemName === "Tandoor" &&
-              alaCarte
-                .filter((item) => item.tandoor_dish === true)
-                .map((tandoor, index) => (
-                  <DishItems dishName={tandoor} key={index} />
-                ))}
-
-            {itemName === "Vegan" &&
-              alaCarte
-                .filter((item) => item.vegan === true)
-                .map((veganfood, index) => (
-                  <DishItems dishName={veganfood} key={index} />
-            ))}
-
+            {filteredItems.length > 0 ? (
+              filteredItems
+            ) : (
+              <p className="flex justify-center font-bold text-2xl text-orange-400">
+                No menu found for {itemName}.
+              </p>
+            )}
             <Modal
               open={isEditOpen}
               onOk={hideEditModal}

@@ -3,7 +3,7 @@ import { Input, InputLabel, Textarea } from "./Input";
 import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
-import { Checkbox } from 'antd';
+import { Checkbox } from "antd";
 
 const Item = ({ itemId, itemName }) => {
   const [lactose_free, setLactoseFree] = useState(true);
@@ -12,9 +12,15 @@ const Item = ({ itemId, itemName }) => {
   const [day, setDay] = useState([]);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
 
-  const plainOptions = ['Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai'];
-  const isDaySelected = (selectedDay) => day.includes(selectedDay);
+  const plainOptions = [
+    "Maanantai",
+    "Tiistai",
+    "Keskiviikko",
+    "Torstai",
+    "Perjantai",
+  ];
 
   useEffect(() => {
     if (itemId) {
@@ -23,8 +29,27 @@ const Item = ({ itemId, itemName }) => {
       setLactoseFree(itemName.lactose_free);
       setGlutenFree(itemName.gluten_free);
       setNutFree(itemName.nut_free);
+    } else {
+      setIsFormDirty(true);
     }
   }, [itemId]);
+
+  useEffect(() => {
+    // Check if any of the form fields are different from their initial values
+    if (itemId) {
+      const isDirty =
+        day !== itemName.day ||
+        description !== itemName.description ||
+        lactose_free !== itemName.lactose_free ||
+        gluten_free !== itemName.gluten_free ||
+        nut_free !== itemName.nut_free;
+      setIsFormDirty(isDirty);
+    }
+  }, [day, description, lactose_free, gluten_free, nut_free, isFormDirty]);
+
+  const isSubmitDisabled = () => {
+    return !isFormDirty;
+  };
 
   const handleDayChange = (e) => {
     const inputValue = e.target.value;
@@ -61,7 +86,7 @@ const Item = ({ itemId, itemName }) => {
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
-      setLoading(false);
+      setLoading(true);
       window.location.href = "./LunchMenu";
     }
   };
@@ -74,7 +99,12 @@ const Item = ({ itemId, itemName }) => {
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <InputLabel label="Choose Day(s)" />
-            <Checkbox.Group options={plainOptions} value={day} onChange={(checkedDays) => setDay(checkedDays)}  />
+            <Checkbox.Group
+              className="pb-3"
+              options={plainOptions}
+              value={day}
+              onChange={(checkedDays) => setDay(checkedDays)}
+            />
             <Input
               type="text"
               className=""
@@ -145,7 +175,12 @@ const Item = ({ itemId, itemName }) => {
           <div className="flex justify-center mt-10">
             <button
               type="submit"
-              className="w-42 p-4 rounded-xl text-white font-bold border-blue-600 bg-blue-600"
+              className={`w-42 p-4 rounded-xl text-white font-bold border-blue-600 ${
+                isSubmitDisabled()
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-blue-600"
+              }`}
+              disabled={isSubmitDisabled()}
             >
               Save changes
             </button>

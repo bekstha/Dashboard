@@ -4,7 +4,7 @@ import useFoodMenu from "../hooks/useFoodMenu";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Item from "../components/LunchItem";
 import Button from "../components/Button";
-
+import LoadingScreen from "../components/LoadingScreen";
 
 const LunchMenu = () => {
   const [day, setDay] = useState("");
@@ -13,9 +13,16 @@ const LunchMenu = () => {
   const { lunchItem, deleteLunch } = useFoodMenu();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [dishName, setDishName] = useState("");
+  const [loading, setLoading] = useState(true);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const filteredMenu = lunchItem.filter((item) => item.day.includes(day));
+
+  useEffect(() => {
+    if (lunchItem.length > 0) {
+      setLoading(false);
+    }
+  }, [lunchItem]);
 
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
@@ -67,12 +74,13 @@ const LunchMenu = () => {
     );
   };
 
-  return (
+  return loading ? (
+    <LoadingScreen />
+  ) : (
     <div className="flex justify-center">
       <div className="border w-full m-5 bg-slate-100">
         <div className="flex-col justify-center ">
           <div className="relative flex justify-between items-center m-5 p-3 gap-10 overflow-x-auto scrollbar-hide">
-
             <div className="flex gap-10">
               <Category item="Maanantai" />
               <Category item="Tiistai" />
@@ -108,7 +116,7 @@ const LunchMenu = () => {
               <Item />
             </Modal>
           </div>
-          <div className="m-5 rounded-lg p-3 ">
+          <div className="m-5 rounded-lg p- ">
             <hr className="border-orange-500" />
             {filteredMenu.map((item, index) => (
               <div

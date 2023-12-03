@@ -7,7 +7,8 @@ import { db } from "../config/firebase";
 const SpecialMenuItem = ({itemId, itemName}) => {
     const [loading, setLoading] = useState(false);
     const [title, setTitle] = useState("");
-    const [day, setDay] = useState();
+    const [startDay, setStartDay] = useState();
+    const [endDay, setEndDay] = useState();
     const [price, setPrice] = useState([]);
     const [starters, setStarters] = useState([]);
     const [lightbites, setLightbites] = useState([]);
@@ -15,11 +16,13 @@ const SpecialMenuItem = ({itemId, itemName}) => {
     const [desserts, setDessert] = useState([]);
     const [beverage, setBeverages] = useState([]);
     const [message, setMessage] = useState("");
+    const [isFormDirty, setIsFormDirty] = useState(false);
 
     useEffect(() => {
         if(itemId) {
             setTitle(itemName.title);
-            setDay(itemName.day);
+            setStartDay(itemName.start_date);
+            setEndDay(itemName.end_date);
             setPrice(itemName.price);
             setStarters(itemName.starters);
             setLightbites(itemName.lightbites);
@@ -28,7 +31,32 @@ const SpecialMenuItem = ({itemId, itemName}) => {
             setBeverages(itemName.beverage);
             setMessage(itemName.message);
         }
+        else{
+            setIsFormDirty(true)
+          }
     }, [itemId]);
+
+    useEffect(() => {
+        if(itemId) {
+            const isDirty = [
+                title !== itemName.title,
+                startDay !== itemName.start_date,
+                endDay !== itemName.end_date,
+                price !== itemName.price,
+                starters !== itemName.starters,
+                lightbites !== itemName.lightbites,
+                maincourse !== itemName.maincourse,
+                desserts !== itemName.desserts,
+                beverage !== itemName.beverage,
+                message !== itemName.message,
+              ].some(Boolean);
+              setIsFormDirty(isDirty);
+        }
+      }, [title, startDay, endDay, price, starters, lightbites, maincourse, desserts, beverage, message]);
+
+      const isSubmitDisabled = () => {
+        return !isFormDirty;
+      };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -40,7 +68,8 @@ const SpecialMenuItem = ({itemId, itemName}) => {
                 const specialMenuRef = doc(specialMenucollection, itemId);
                 await updateDoc(specialMenuRef, {
                     beverage,
-                    day,
+                    start_date : startDay,
+                    end_date : endDay,
                     price,
                     desserts,
                     lightbites,
@@ -54,7 +83,8 @@ const SpecialMenuItem = ({itemId, itemName}) => {
             } else {
                 await addDoc(specialMenucollection, {
                     beverage,
-                    day,
+                    start_date : startDay,
+                    end_date : endDay,
                     price,
                     desserts,
                     lightbites,
@@ -84,7 +114,6 @@ const SpecialMenuItem = ({itemId, itemName}) => {
                         <InputLabel label="Title" />
                         <Input
                             type="text"
-                            className=""
                             placeholder="Title"
                             value={title}
                             onChange={e =>setTitle(e.target.value)}
@@ -92,21 +121,27 @@ const SpecialMenuItem = ({itemId, itemName}) => {
                     </div>
     
                     <div className="mb-5">
-                        <InputLabel label="Day" />
-                        <Input
-                            type="date"
-                            className=""
-                            placeholder="Day"
-                            value={day}
-                            onChange={e =>setDay(e.target.value)}
-                        />
+                        <InputLabel label="Day (Start - End)" />
+                        <div className='flex'>
+                            <Input
+                                type="date"
+                                placeholder="Day"
+                                value={startDay}
+                                onChange={e =>setStartDay(e.target.value)}
+                            />
+                            <Input
+                                type="date"
+                                placeholder="Day"
+                                value={endDay}
+                                onChange={e =>setEndDay(e.target.value)}
+                            />
+                        </div>
                     </div>
     
                     <div className="mb-5">
                         <InputLabel label="Price" />
                         <Input
                             type="text"
-                            className=""
                             placeholder="Price(normalli, lapset(6-12), lapset(3-5))"
                             value={price}
                             onChange={e => {
@@ -118,11 +153,11 @@ const SpecialMenuItem = ({itemId, itemName}) => {
                     </div>
     
                     <div className="mb-5">
-                        <InputLabel label="Alkuruoka" />
+                        <InputLabel label="Starters" />
                         <Input
                             type="text"
                             className=""
-                            placeholder="Alkuruoka"
+                            placeholder="Starters"
                             value={starters}
                             onChange={e => {
                                 const input = e.target.value;
@@ -205,7 +240,12 @@ const SpecialMenuItem = ({itemId, itemName}) => {
                     <div className="flex justify-center mt-10">
                     <button
                         type="submit"
-                        className="w-42 p-4 rounded-xl text-white font-bold border-blue-600 bg-blue-600">
+                        className={`w-42 p-4 rounded-xl text-white font-bold border-blue-600 ${
+                            isSubmitDisabled()
+                              ? "bg-gray-500 cursor-not-allowed"
+                              : "bg-blue-600"
+                          }`}
+                    >
                         Save changes
                     </button>
                     </div>
