@@ -54,8 +54,13 @@ const SpecialMenuItem = ({itemId, itemName}) => {
         }
       }, [title, startDay, endDay, price, starters, lightbites, maincourse, desserts, beverage, message]);
 
+      const isFormEmpty = () => {
+        return !title || !startDay || !endDay || !price || !beverage ||
+                !starters || !lightbites || !maincourse || !desserts || !message ;
+      };
+
       const isSubmitDisabled = () => {
-        return !isFormDirty;
+        return !isFormDirty || isFormEmpty();
       };
 
     const handleSubmit = async (event) => {

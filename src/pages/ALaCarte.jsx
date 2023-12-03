@@ -202,6 +202,7 @@ const ALaCarte = () => {
                   <AlaCarteItem
                     itemId={selectedItem.id}
                     itemName={selectedItem}
+                    dishName={dishName}
                   />
                 </div>
               )}

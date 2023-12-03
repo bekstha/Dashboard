@@ -4,10 +4,10 @@ import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
 
-const AlaCarteItem = ({ itemId, itemName }) => {
-  const [lactose_free, setLactoseFree] = useState(true);
-  const [gluten_free, setGlutenFree] = useState(true);
-  const [nut_free, setNutFree] = useState(true);
+const AlaCarteItem = ({ itemId, itemName, dishName }) => {
+  const [lactose_free, setLactoseFree] = useState(null);
+  const [gluten_free, setGlutenFree] = useState(null);
+  const [nut_free, setNutFree] = useState(null);
   const [price, setPrice] = useState("");
   const [title, setTitle] = useState("");
   const [dishType, setDishType] = useState("");
@@ -71,14 +71,19 @@ const AlaCarteItem = ({ itemId, itemName }) => {
     lamb_dish,
     veg_dish,
     vegan,
-    itemName,
   ]);
 
+  const isFormEmpty = () => {
+    return !title.length || !description.trim() || lactose_free === null || 
+            gluten_free === null || nut_free === null || dishType === null ;
+  };
+
   const isSubmitDisabled = () => {
-    return !isFormDirty;
+    return !isFormDirty || isFormEmpty();
   };
 
   const handleDishTypeChange = (selectedDishType) => {
+    setDishType(selectedDishType);
     console.log(selectedDishType);
     setChicken(selectedDishType === "chicken_dish");
     setStarter(selectedDishType === "starter");
@@ -92,6 +97,7 @@ const AlaCarteItem = ({ itemId, itemName }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
     try {
       setLoading(true);
       const alaCarteCollection = collection(db, "A_La_Carte");
@@ -183,6 +189,7 @@ const AlaCarteItem = ({ itemId, itemName }) => {
               }}
               className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
             >
+              <option value="">Select</option>
               <option value="chicken_dish">Chicken</option>
               <option value="lamb_dish">Lamb</option>
               <option value="starter">Starter</option>
@@ -202,6 +209,7 @@ const AlaCarteItem = ({ itemId, itemName }) => {
                   onChange={(e) => setGlutenFree(e.target.value === "true")}
                   className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
+                  <option value="">Select</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -218,6 +226,7 @@ const AlaCarteItem = ({ itemId, itemName }) => {
                   onChange={(e) => setLactoseFree(e.target.value === "true")}
                   className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
+                  <option value="">Select</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -234,6 +243,7 @@ const AlaCarteItem = ({ itemId, itemName }) => {
                   onChange={(e) => setNutFree(e.target.value === "true")}
                   className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
+                  <option value="">Select</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>

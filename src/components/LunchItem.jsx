@@ -3,12 +3,12 @@ import { Input, InputLabel, Textarea } from "./Input";
 import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
-import { Checkbox } from "antd";
+import { Checkbox, message } from "antd";
 
 const Item = ({ itemId, itemName }) => {
-  const [lactose_free, setLactoseFree] = useState(true);
-  const [gluten_free, setGlutenFree] = useState(true);
-  const [nut_free, setNutFree] = useState(true);
+  const [lactose_free, setLactoseFree] = useState(null);
+  const [gluten_free, setGlutenFree] = useState(null);
+  const [nut_free, setNutFree] = useState(null);
   const [day, setDay] = useState([]);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ const Item = ({ itemId, itemName }) => {
       setGlutenFree(itemName.gluten_free);
       setNutFree(itemName.nut_free);
     } else {
-      setIsFormDirty(true);
+      setIsFormDirty(true)
     }
   }, [itemId]);
 
@@ -38,17 +38,21 @@ const Item = ({ itemId, itemName }) => {
     // Check if any of the form fields are different from their initial values
     if (itemId) {
       const isDirty =
-        day !== itemName.day ||
-        description !== itemName.description ||
+        day !== itemName.day || 
+        description !== itemName.description || 
         lactose_free !== itemName.lactose_free ||
         gluten_free !== itemName.gluten_free ||
         nut_free !== itemName.nut_free;
-      setIsFormDirty(isDirty);
+        setIsFormDirty(isDirty);
     }
   }, [day, description, lactose_free, gluten_free, nut_free, isFormDirty]);
 
+  const isFormEmpty = () => {
+    return !day.length || !description.trim() || lactose_free === null || gluten_free === null || nut_free === null ;
+  };
+
   const isSubmitDisabled = () => {
-    return !isFormDirty;
+    return !isFormDirty || isFormEmpty();
   };
 
   const handleDayChange = (e) => {
@@ -134,6 +138,7 @@ const Item = ({ itemId, itemName }) => {
                   onChange={(e) => setGlutenFree(e.target.value === "true")}
                   className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
+                  <option value="">Select</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -150,6 +155,7 @@ const Item = ({ itemId, itemName }) => {
                   onChange={(e) => setLactoseFree(e.target.value === "true")}
                   className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
+                  <option value="">Select</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -166,6 +172,7 @@ const Item = ({ itemId, itemName }) => {
                   onChange={(e) => setNutFree(e.target.value === "true")}
                   className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
+                  <option value="">Select</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
