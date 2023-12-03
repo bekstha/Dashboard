@@ -10,7 +10,6 @@ import {
 
 const useReservation = () => {
   const [reservations, setReservations] = useState([]);
-  const reservationInfo = collection(db, "Reservations");
 
   useEffect(() => {
     const q = query(collection(db, "Reservations"));
