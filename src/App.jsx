@@ -6,21 +6,22 @@ import Reservations from "./pages/Reservations";
 import ALaCarte from "./pages/ALaCarte";
 import Openings from "./pages/Openings";
 import Contact from "./pages/Contact";
+import LunchMenu from "./pages/LunchMenu";
 import { useStateContext } from "./contexts/ContextProvider";
 import SpecialMenu from "./pages/SpecialMenu";
 import SignIn from "./pages/SignIn";
 import { useMainContext } from "./contexts/MainContextProvider";
 import { BrowserRouter as Router } from "react-router-dom";
 
-
 function App() {
   const { activeMenu } = useStateContext();
   const { isAdmin } = useMainContext();
 
   return (
-    <>        <Router>
-
-      {isAdmin ? (
+    <>
+      {" "}
+      <Router>
+        {isAdmin ? (
           <div className="flex relative dark:bg-main-dark-bg">
             {activeMenu ? (
               <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white">
@@ -46,9 +47,8 @@ function App() {
 
               <div className="p-4">
                 <Routes>
-{/*                   <Route path="/" element={<Reservations />} />
- */}                  <Route path="/reservations" element={<Reservations />} />
-                  <Route path="/lunchMenu" element={<Reservations />} />
+                  <Route path="/reservations" element={<Reservations />} />
+                  <Route path="/lunchMenu" element={<LunchMenu />} />
                   <Route path="/alacarte" element={<ALaCarte />} />
                   <Route path="/openings" element={<Openings />} />
                   <Route path="/contact" element={<Contact />} />
@@ -57,11 +57,10 @@ function App() {
               </div>
             </div>
           </div>
-      ) : (
-        <SignIn />
-      )}
-              </Router>
-
+        ) : (
+          <SignIn />
+        )}
+      </Router>
     </>
   );
 }
