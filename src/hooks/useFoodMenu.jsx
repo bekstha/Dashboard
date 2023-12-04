@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { db } from "../config/firebase";
-import { collection, deleteDoc, doc, onSnapshot, query } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, query, setDoc, addDoc } from "firebase/firestore";
 
 function useFoodMenu() {
   const [lunchItem, setLunchItem] = useState([]);
@@ -26,8 +26,35 @@ function useFoodMenu() {
     }
   };
 
+  const updateLunch = async (lunchId, newData) => {
+    try {
+      const lunchRef = doc(db, "LunchMenu", lunchId);
+      await setDoc(lunchRef, newData, { merge: true });
+      console.log("Lunch updated successfully!");
+    } catch (error) {
+      console.error("Error updating Lunch:", error);
+      throw error;
+    }
+  };
 
-  return { lunchItem, deleteLunch };
+  const addLunch = async (day, description, lactose_free, nut_free, gluten_free) => {
+    try {
+      await addDoc(collection(db, "LunchMenu"), {
+        day,
+        description,
+        lactose_free,
+        nut_free,
+        gluten_free,
+      });
+      console.log("Lunch added successfully!");
+    } catch (error) {
+      console.error("Error adding Lunch:", error);
+      throw error;
+    }
+  };
+
+
+  return { lunchItem, deleteLunch, updateLunch, addLunch };
 }
 
 export default useFoodMenu;

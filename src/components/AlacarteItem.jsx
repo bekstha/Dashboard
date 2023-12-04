@@ -5,9 +5,10 @@ import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
 
 const AlaCarteItem = ({ itemId, itemName, dishName }) => {
-  const [lactose_free, setLactoseFree] = useState(null);
-  const [gluten_free, setGlutenFree] = useState(null);
-  const [nut_free, setNutFree] = useState(null);
+  console.log(dishName)
+  const [lactose_free, setLactoseFree] = useState("");
+  const [gluten_free, setGlutenFree] = useState("");
+  const [nut_free, setNutFree] = useState("");
   const [price, setPrice] = useState("");
   const [title, setTitle] = useState("");
   const [dishType, setDishType] = useState("");
@@ -35,6 +36,7 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
       setVegetarian(itemName.veg_dish);
       setVegan(itemName.vegan);
       setLamb(itemName.lamb_dish);
+      setDishType(dishName);
     } else {
       setIsFormDirty(true);
     }
@@ -74,8 +76,8 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
   ]);
 
   const isFormEmpty = () => {
-    return !title.length || !description.trim() || lactose_free === null || 
-            gluten_free === null || nut_free === null || dishType === null ;
+    return !title.trim() || !description.trim() || lactose_free === "" || 
+            gluten_free === "" || nut_free === "" || dishType === "" ;
   };
 
   const isSubmitDisabled = () => {
@@ -85,15 +87,13 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
   const handleDishTypeChange = (selectedDishType) => {
     setDishType(selectedDishType);
     console.log(selectedDishType);
-    setChicken(selectedDishType === "chicken_dish");
-    setStarter(selectedDishType === "starter");
-    setTandoor(selectedDishType === "tandoor_dish");
-    setVegetarian(selectedDishType === "veg_dish");
-    setVegan(selectedDishType === "vegan");
-    setLamb(selectedDishType === "lamb_dish");
+    setChicken(selectedDishType === "Chicken");
+    setStarter(selectedDishType === "Starters");
+    setTandoor(selectedDishType === "Tandoor");
+    setVegetarian(selectedDishType === "Vegetarian");
+    setVegan(selectedDishType === "Vegan");
+    setLamb(selectedDishType === "Lamb");
   };
-
-  console.log(isFormDirty);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -190,12 +190,12 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
               className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
             >
               <option value="">Select</option>
-              <option value="chicken_dish">Chicken</option>
-              <option value="lamb_dish">Lamb</option>
-              <option value="starter">Starter</option>
-              <option value="tandoor_dish">Tandoor</option>
-              <option value="veg_dish">Vegetarian</option>
-              <option value="vegan">Vegan</option>
+              <option value="Chicken">Chicken</option>
+              <option value="Lamb">Lamb</option>
+              <option value="Starters">Starter</option>
+              <option value="Tandoor">Tandoor</option>
+              <option value="Vegetarian">Vegetarian</option>
+              <option value="Vegan">Vegan</option>
             </select>
           </div>
           <div className="flex-col justify-between">

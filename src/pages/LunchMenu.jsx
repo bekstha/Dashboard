@@ -10,7 +10,7 @@ const LunchMenu = () => {
   const [day, setDay] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const { lunchItem, deleteLunch } = useFoodMenu();
+  const { lunchItem, updateLunch } = useFoodMenu();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [dishName, setDishName] = useState("");
   const [loading, setLoading] = useState(true);
@@ -48,14 +48,20 @@ const LunchMenu = () => {
     handleDayClick("Maanantai");
   }, []);
 
-  const removeLunchItem = async (id) => {
-    console.log(id);
+  const removeLunchItem = async (item) => {
+    const itemsToDelete = day;
+    // Update the day array by removing the identified items
+    const updatedDay = item.day.filter((dayItem) => !itemsToDelete.includes(dayItem));
+    const newData = {
+      day: updatedDay,
+    };
+
     Modal.confirm({
       title: "Confirm Delete",
-      content: "Are you sure you want to delete this Item?",
+      content: `Are you sure you want to delete this item ?`,
       okButtonProps: { className: "bg-green-500 text-white" },
       onOk: () => {
-        deleteLunch(id);
+        updateLunch(item.id, newData);
       },
       onCancel: hideDeleteModal,
     });
@@ -135,7 +141,7 @@ const LunchMenu = () => {
                   </button>
                   <button
                     className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md text-xs"
-                    onClick={() => removeLunchItem(item.id)}
+                    onClick={() => removeLunchItem(item)}
                   >
                     Delete
                   </button>

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Input, InputLabel, Textarea } from "./Input";
-import { db } from "../config/firebase";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
-import { Checkbox, message } from "antd";
+import { Checkbox } from "antd";
+import useFoodMenu from "../hooks/useFoodMenu";
 
 const Item = ({ itemId, itemName }) => {
-  const [lactose_free, setLactoseFree] = useState(null);
-  const [gluten_free, setGlutenFree] = useState(null);
-  const [nut_free, setNutFree] = useState(null);
+  const [lactose_free, setLactoseFree] = useState();
+  const [gluten_free, setGlutenFree] = useState();
+  const [nut_free, setNutFree] = useState();
   const [day, setDay] = useState([]);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [isFormDirty, setIsFormDirty] = useState(false);
+  const { updateLunch, addLunch } = useFoodMenu()
 
   const plainOptions = [
     "Maanantai",
@@ -37,6 +37,7 @@ const Item = ({ itemId, itemName }) => {
   useEffect(() => {
     // Check if any of the form fields are different from their initial values
     if (itemId) {
+      console.log(day, itemName.day)
       const isDirty =
         day !== itemName.day || 
         description !== itemName.description || 
@@ -48,7 +49,7 @@ const Item = ({ itemId, itemName }) => {
   }, [day, description, lactose_free, gluten_free, nut_free, isFormDirty]);
 
   const isFormEmpty = () => {
-    return !day.length || !description.trim() || lactose_free === null || gluten_free === null || nut_free === null ;
+    return !day.length || !description.trim() || lactose_free === undefined || gluten_free === undefined || nut_free === undefined ;
   };
 
   const isSubmitDisabled = () => {
@@ -66,31 +67,19 @@ const Item = ({ itemId, itemName }) => {
     event.preventDefault();
     try {
       setLoading(true);
-      const lunchMenuCollection = collection(db, "LunchMenu");
+      const newData = {
+        day, description, lactose_free, nut_free, gluten_free,
+      };
 
       if (itemId) {
-        const lunchMenuRef = doc(lunchMenuCollection, itemId);
-
-        await updateDoc(lunchMenuRef, {
-          day,
-          description,
-          lactose_free,
-          nut_free,
-          gluten_free,
-        });
+        await updateLunch(itemId, newData)
       } else {
-        await addDoc(lunchMenuCollection, {
-          day,
-          description,
-          lactose_free,
-          nut_free,
-          gluten_free,
-        });
+        await addLunch(day, description, lactose_free, nut_free, gluten_free);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
-      setLoading(true);
+      setLoading(false);
       window.location.href = "./LunchMenu";
     }
   };
