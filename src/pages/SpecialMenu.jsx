@@ -52,7 +52,7 @@ const SpecialMenu = ({}) => {
     <LoadingScreen />
   ) : (
     <div className="flex justify-center">
-      <div className="border w-full m-5 p-3 bg-slate-100">
+      <div className="border w-full m-5 p-3 bg-slate-100 rounded-lg">
         <div className="flex gap-10 justify-between">
           <button
             onClick={() => showAddModal()}

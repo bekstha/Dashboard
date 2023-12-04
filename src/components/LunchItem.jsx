@@ -37,7 +37,6 @@ const Item = ({ itemId, itemName }) => {
   useEffect(() => {
     // Check if any of the form fields are different from their initial values
     if (itemId) {
-      console.log(day, itemName.day)
       const isDirty =
         day !== itemName.day || 
         description !== itemName.description || 
@@ -58,7 +57,7 @@ const Item = ({ itemId, itemName }) => {
 
   const handleDayChange = (e) => {
     const inputValue = e.target.value;
-    // Assuming the input value is a comma-separated string, you can convert it to an array
+    // Assuming the input value is a comma-separated string, convert it to an array
     const daysArray = inputValue.split(",").map((day) => day.trim());
     setDay(daysArray);
   };

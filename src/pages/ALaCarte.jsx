@@ -10,7 +10,6 @@ import LoadingScreen from "../components/LoadingScreen";
 
 const ALaCarte = () => {
   const [itemName, setItemName] = useState("");
-  const [selectedButton, setSelectedButton] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -132,10 +131,10 @@ const ALaCarte = () => {
     <LoadingScreen />
   ) : (
     <div className="flex justify-center">
-      <div className="relative border w-full m-5 bg-slate-100">
+      <div className="border w-full m-5 bg-slate-100 rounded-lg">
         <div className="flex-col justify-center ">
-          <div className="flex justify-between p-3 m-5 gap-8 overflow-x-auto scrollbar-hide">
-            <div className="flex gap-8">
+          <div className="flex flex-wrap justify-between p-3 m-5 gap-8 overflow-x-auto scrollbar-hide">
+            <div className="flex flex-wrap gap-8">
               <Category item="Starters" />
               <Category item="Vegetarian" />
               <Category item="Lamb" />
