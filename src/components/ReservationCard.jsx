@@ -23,24 +23,31 @@ const ReservationCard = ({ reservations = [] }) => {
     lastname: "",
     email: "",
     phoneNumber: "",
-    guestCount: 1,
+    guestCount: null,
     reservationDate: "",
     reservationTime: "",
   });
-  const {
-    firstname,
-    lastname,
-    email,
-    phoneNumber,
-    guestCount,
-    reservationDate,
-    reservationTime,
-  } = state;
+
+  console.log({ state });
 
   const isNotEmpty = (value) => value.trim() !== "";
   const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   const isValidPhoneNumber = (value) => /^\+?[1-9]\d{1,14}$/.test(value);
   const isValidNumber = (value) => /^\d+$/.test(value);
+
+  const validateForm = () => {
+    if (
+      !isNotEmpty(firstname) ||
+      !isNotEmpty(lastname) ||
+      !isValidEmail(email) ||
+      !isValidPhoneNumber(phoneNumber) ||
+      !isValidNumber(guestCount)
+    ) {
+      console.error("Invalid input. Please check your form fields.");
+      return false;
+    }
+    return true;
+  };
 
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
@@ -57,21 +64,10 @@ const ReservationCard = ({ reservations = [] }) => {
     });
   };
 
-  const validateForm = () => {
-    if (
-      !isNotEmpty(firstname) ||
-      !isNotEmpty(lastname) ||
-      !isValidEmail(email) ||
-      !isValidPhoneNumber(phoneNumber) ||
-      !isValidNumber(guestCount)
-    ) {
-      console.error("Invalid input. Please check your form fields.");
-      return false;
-    }
-    return true;
-  };
-  const handleInputChange = (event) =>
+  const handleInputChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.value });
+    console.log({ name: event.target });
+  };
 
   const modifyReservation = async (id) => {
     setIsOpen(true);
@@ -81,8 +77,7 @@ const ReservationCard = ({ reservations = [] }) => {
   const handleReservationSubmit = async (event) => {
     event.preventDefault();
     try {
-      console.log({ selectedID });
-      await updateDoc(doc(db, "Reservations", selectedID), {
+      const {
         firstname,
         lastname,
         email,
@@ -90,6 +85,17 @@ const ReservationCard = ({ reservations = [] }) => {
         guestCount,
         reservationDate,
         reservationTime,
+      } = state;
+
+      await updateDoc(doc(db, "Reservations", selectedID), {
+        firstname: firstname || reservationById[0]?.firstname,
+        lastname: lastname || reservationById[0]?.lastname,
+        email: email || reservationById[0]?.email,
+        phoneNumber: phoneNumber || reservationById[0]?.phoneNumber,
+        guestCount: guestCount || reservationById[0]?.guestCount,
+        reservationDate: reservationDate || reservationById[0]?.reservationDate,
+        reservationTime: reservationTime || reservationById[0]?.reservationTime,
+        status: "pending",
       });
 
       setIsOpen(false);
@@ -105,13 +111,31 @@ const ReservationCard = ({ reservations = [] }) => {
     (total, reservation) => total + Number(reservation.guestCount),
     0
   );
+  const declinedReservations = reservations.filter(
+    (reservation) => reservation.status === "declined"
+  );
+
+  const totalDeclinedGuests = declinedReservations.reduce(
+    (total, reservation) => total + Number(reservation.guestCount),
+    0
+  );
+  const cancelledReservations = reservations.filter(
+    (reservation) => reservation.status === "cancelled"
+  );
+  const totalCancelledGuests = cancelledReservations.reduce(
+    (total, reservation) => total + Number(reservation.guestCount),
+    0
+  );
+
+  const confirmedGuestNumber =
+    totalGuestCount - (totalDeclinedGuests + totalCancelledGuests);
 
   return (
     <div>
       <div className="bg-gray-200 p-4 flex items-center w-full">
         <Statistic
-          title="Total Guests"
-          value={totalGuestCount}
+          title="Total Confirmed Guests"
+          value={confirmedGuestNumber}
           prefix={<UserOutlined />}
         />
       </div>
@@ -141,13 +165,21 @@ const ReservationCard = ({ reservations = [] }) => {
                 label={
                   <div className="flex">
                     <a
-                      href={`http://localhost:5173/reservation/${item.id}/decline`}
+                      href={
+                        item.status !== "pending"
+                          ? "#"
+                          : `http://localhost:5173/reservation/${item.id}/decline`
+                      }
                       className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
                     >
                       Decline
                     </a>
                     <a
-                      href={`http://localhost:5173/reservation/${item.id}/approve`}
+                      href={
+                        item.status !== "pending"
+                          ? "#"
+                          : `http://localhost:5173/reservation/${item.id}/approve`
+                      }
                       className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
                     >
                       Approve
@@ -176,7 +208,6 @@ const ReservationCard = ({ reservations = [] }) => {
             </tr>
           ))}
           <Modal open={isOpen} onCancel={() => setIsOpen(false)}>
-            {selectedID}
             <form onSubmit={handleReservationSubmit}>
               <div className="flex items-center justify-between gap-4">
                 <div>
@@ -184,7 +215,7 @@ const ReservationCard = ({ reservations = [] }) => {
                   <Input
                     placeholder="John"
                     name="firstname"
-                    value={firstname || reservationById[0]?.firstname}
+                    value={state?.firstname || reservationById[0]?.firstname}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -193,7 +224,7 @@ const ReservationCard = ({ reservations = [] }) => {
                   <Input
                     placeholder="Doe"
                     name="lastname"
-                    value={lastname || reservationById[0]?.lastname}
+                    value={state?.lastname || reservationById[0]?.lastname}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -204,7 +235,7 @@ const ReservationCard = ({ reservations = [] }) => {
                   type="email"
                   placeholder="example@mail.com"
                   name="email"
-                  value={email || reservationById[0]?.email}
+                  value={state?.email || reservationById[0]?.email}
                   onChange={handleInputChange}
                 />
               </div>
@@ -214,7 +245,7 @@ const ReservationCard = ({ reservations = [] }) => {
                   type="tel"
                   placeholder="+358411103121"
                   name="phoneNumber"
-                  value={phoneNumber || reservationById[0]?.phoneNumber}
+                  value={state?.phoneNumber || reservationById[0]?.phoneNumber}
                   onChange={handleInputChange}
                 />
               </div>
@@ -226,7 +257,7 @@ const ReservationCard = ({ reservations = [] }) => {
                   min="1"
                   max="14"
                   name="guestCount"
-                  value={guestCount || reservationById[0]?.guestCount}
+                  value={state?.guestCount || reservationById[0]?.guestCount}
                   onChange={handleInputChange}
                 />
               </div>
@@ -237,7 +268,8 @@ const ReservationCard = ({ reservations = [] }) => {
                     type="time"
                     name="reservationTime"
                     value={
-                      reservationTime || reservationById[0]?.reservationTime
+                      state?.reservationTime ||
+                      reservationById[0]?.reservationTime
                     }
                     onChange={handleInputChange}
                   />
