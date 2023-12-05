@@ -1,16 +1,23 @@
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useState } from "react";
-import { Button, Modal, Statistic } from "antd";
+import Button from "./Button";
+import { Modal, Statistic } from "antd";
 import { InputLabel, Input } from "./Input";
 import { EditOutlined, DeleteOutlined, UserOutlined } from "@ant-design/icons";
 import useReservation from "../hooks/useReservation";
+import ReservationDetailModal from "./ReservationDetailModal";
 
-const TableHeader = ({ label }) => (
-  <th className="py-2 px-4 border-b ">{label}</th>
+const TableHeader = ({ label, headerClass }) => (
+  <th className={`py-2 px-4 border-b ${headerClass}`}>{label}</th>
 );
-const TableContent = ({ label }) => (
-  <td className="py-2 px-4 border-b ">{label}</td>
+const TableContent = ({ label, headerClass, onClick }) => (
+  <td
+    className={`py-2 px-4 border-b ${headerClass}`}
+    onClick={() => onClick && onClick()}
+  >
+    {label}
+  </td>
 );
 
 const ReservationCard = ({ reservations = [] }) => {
@@ -18,6 +25,9 @@ const ReservationCard = ({ reservations = [] }) => {
   const [selectedID, setSelectedID] = useState();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const { deleteReservation } = useReservation();
+  const [selectedReservation, setSelectedReservation] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
   const [state, setState] = useState({
     firstname: "",
     lastname: "",
@@ -27,8 +37,6 @@ const ReservationCard = ({ reservations = [] }) => {
     reservationDate: "",
     reservationTime: "",
   });
-
-  console.log({ state });
 
   const isNotEmpty = (value) => value.trim() !== "";
   const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -68,7 +76,14 @@ const ReservationCard = ({ reservations = [] }) => {
     setState({ ...state, [event.target.name]: event.target.value });
     console.log({ name: event.target });
   };
-
+  const handleReservationClick = (id) => {
+    setSelectedID(id);
+    setIsDetailModalOpen(true);
+  };
+  const handleCloseDetailModal = () => {
+    setSelectedID(null);
+    setIsDetailModalOpen(false);
+  };
   const modifyReservation = async (id) => {
     setIsOpen(true);
     setSelectedID(id);
@@ -107,184 +122,188 @@ const ReservationCard = ({ reservations = [] }) => {
   const reservationById = reservations?.filter(
     (reservation) => reservation?.id === selectedID
   );
-  const totalGuestCount = reservations.reduce(
-    (total, reservation) => total + Number(reservation.guestCount),
-    0
-  );
-  const declinedReservations = reservations.filter(
-    (reservation) => reservation.status === "declined"
-  );
 
-  const totalDeclinedGuests = declinedReservations.reduce(
-    (total, reservation) => total + Number(reservation.guestCount),
-    0
-  );
-  const cancelledReservations = reservations.filter(
-    (reservation) => reservation.status === "cancelled"
-  );
-  const totalCancelledGuests = cancelledReservations.reduce(
-    (total, reservation) => total + Number(reservation.guestCount),
-    0
-  );
-
-  const confirmedGuestNumber =
-    totalGuestCount - (totalDeclinedGuests + totalCancelledGuests);
+  const totalApprovedGuests = reservations
+    .filter((reservation) => reservation.status === "approved")
+    .reduce((total, reservation) => total + Number(reservation.guestCount), 0);
 
   return (
     <div>
-      <div className="bg-gray-200 p-4 flex items-center w-full">
+      <div className="bg-gray-200 p-4 flex items-center min-w-full  ">
         <Statistic
           title="Total Confirmed Guests"
-          value={confirmedGuestNumber}
+          value={totalApprovedGuests}
           prefix={<UserOutlined />}
         />
       </div>
-      <table className="table-fixed min-w-full bg-white border border-gray-300 lg:text-lg text-xs">
-        <thead>
-          <tr>
-            <TableHeader label="Time" />
-            <TableHeader label="Pax" />
-            <TableHeader label="Name" />
-            <TableHeader label="Email" />
-            <TableHeader label="Phone number" />
-            <TableHeader label="Status" />
-            <TableHeader label="Decision" />
-            <TableHeader label="Actions" />
-          </tr>
-        </thead>
-        <tbody>
-          {reservations?.map((item) => (
-            <tr key={item.id}>
-              <TableContent label={item.reservationTime} />
-              <TableContent label={item.guestCount} />
-              <TableContent label={`${item.firstname} ${item.lastname}`} />
-              <TableContent label={item.email} />
-              <TableContent label={item.phoneNumber} />
-              <TableContent label={item.status} />
-              <TableContent
-                label={
-                  <div className="flex">
-                    <a
-                      href={
-                        item.status !== "pending"
-                          ? "#"
-                          : `http://localhost:5173/reservation/${item.id}/decline`
-                      }
-                      className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
-                    >
-                      Decline
-                    </a>
-                    <a
-                      href={
-                        item.status !== "pending"
-                          ? "#"
-                          : `http://localhost:5173/reservation/${item.id}/approve`
-                      }
-                      className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
-                    >
-                      Approve
-                    </a>
-                  </div>
-                }
-              />
-              <TableContent
-                label={
-                  <div className="flex">
-                    <button
-                      className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
-                      onClick={() => modifyReservation(item.id, item)}
-                    >
-                      <EditOutlined className="mr-1" />
-                    </button>
-                    <button
-                      className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
-                      onClick={() => removeReservation(item.id)}
-                    >
-                      <DeleteOutlined className="mr-1" />
-                    </button>
-                  </div>
-                }
-              />
+      <div className="overflow-x-auto">
+        <table className="table-fixed min-w-full bg-white border border-gray-300 lg:text-lg text-xs overflow-x-scroll">
+          <thead>
+            <tr>
+              <TableHeader label="Time" />
+              <TableHeader label="Pax" />
+              <TableHeader label="Name" />
+              <TableHeader label="Email" headerClass="hidden lg:table-cell" />
+              <TableHeader label="Phone" headerClass="hidden lg:table-cell" />
+              <TableHeader label="Status" headerClass="hidden lg:table-cell" />
+              <TableHeader label="Decision" />
+              <TableHeader label="Actions" />
             </tr>
-          ))}
-          <Modal open={isOpen} onCancel={() => setIsOpen(false)}>
-            <form onSubmit={handleReservationSubmit}>
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <InputLabel label="First name" />
+          </thead>
+          <tbody>
+            {reservations?.map((item) => (
+              <tr key={item.id}>
+                <TableContent label={item.reservationTime} className="" />
+                <TableContent label={item.guestCount} />
+                <TableContent
+                  label={`${item.firstname} ${item.lastname}`}
+                  onClick={() => handleReservationClick(item.id)}
+                  headerClass=" cursor-pointer"
+                />
+                <TableContent
+                  label={item.email}
+                  headerClass="hidden lg:table-cell"
+                />
+                <TableContent
+                  label={item.phoneNumber}
+                  headerClass="hidden lg:table-cell"
+                />
+                <TableContent
+                  label={item.status}
+                  headerClass="hidden lg:table-cell"
+                />
+                <TableContent
+                  label={
+                    <div className="flex flex-col md:flex-row gap-1 justify-center items-center">
+                      <a
+                        href={
+                          item.status !== "pending"
+                            ? "#"
+                            : `http://localhost:5173/reservation/${item.id}/decline`
+                        }
+                        className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
+                      >
+                        Decline
+                      </a>
+                      <a
+                        href={
+                          item.status !== "pending"
+                            ? "#"
+                            : `http://localhost:5173/reservation/${item.id}/approve`
+                        }
+                        className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
+                      >
+                        Approve
+                      </a>
+                    </div>
+                  }
+                />
+                <TableContent
+                  label={
+                    <div className="flex flex-col md:flex-row gap-1 justify-center items-center">
+                      <button
+                        className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
+                        onClick={() => modifyReservation(item.id, item)}
+                      >
+                        <EditOutlined className="mr-1" />
+                      </button>
+                      <button
+                        className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
+                        onClick={() => removeReservation(item.id)}
+                      >
+                        <DeleteOutlined className="mr-1" />
+                      </button>
+                    </div>
+                  }
+                />
+              </tr>
+            ))}
+            <Modal open={isOpen} onCancel={() => setIsOpen(false)}>
+              <form onSubmit={handleReservationSubmit}>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <InputLabel label="First name" />
+                    <Input
+                      placeholder="John"
+                      name="firstname"
+                      value={state?.firstname || reservationById[0]?.firstname}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div>
+                    <InputLabel label="Last name" />
+                    <Input
+                      placeholder="Doe"
+                      name="lastname"
+                      value={state?.lastname || reservationById[0]?.lastname}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <InputLabel label="Email" />
                   <Input
-                    placeholder="John"
-                    name="firstname"
-                    value={state?.firstname || reservationById[0]?.firstname}
+                    type="email"
+                    placeholder="example@mail.com"
+                    name="email"
+                    value={state?.email || reservationById[0]?.email}
                     onChange={handleInputChange}
                   />
                 </div>
-                <div>
-                  <InputLabel label="Last name" />
+                <div className="mt-2">
+                  <InputLabel label="Phone number" />
                   <Input
-                    placeholder="Doe"
-                    name="lastname"
-                    value={state?.lastname || reservationById[0]?.lastname}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-              <div className="mt-2">
-                <InputLabel label="Email" />
-                <Input
-                  type="email"
-                  placeholder="example@mail.com"
-                  name="email"
-                  value={state?.email || reservationById[0]?.email}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="mt-2">
-                <InputLabel label="Phone number" />
-                <Input
-                  type="tel"
-                  placeholder="+358411103121"
-                  name="phoneNumber"
-                  value={state?.phoneNumber || reservationById[0]?.phoneNumber}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="mt-2">
-                <InputLabel label="Number of guest" />
-                <Input
-                  type="number"
-                  placeholder="1"
-                  min="1"
-                  max="14"
-                  name="guestCount"
-                  value={state?.guestCount || reservationById[0]?.guestCount}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="mt-2 flex items-center justify-between gap-4">
-                <div className="flex-1">
-                  <InputLabel label="Time" />
-                  <Input
-                    type="time"
-                    name="reservationTime"
+                    type="tel"
+                    placeholder="+358411103121"
+                    name="phoneNumber"
                     value={
-                      state?.reservationTime ||
-                      reservationById[0]?.reservationTime
+                      state?.phoneNumber || reservationById[0]?.phoneNumber
                     }
                     onChange={handleInputChange}
                   />
                 </div>
-              </div>
-              <Button
-                onClick={(event) => handleReservationSubmit(event)}
-                className="md:w-full w-full mt-8"
-              >
-                Submit Reservation
-              </Button>
-            </form>
-          </Modal>
-        </tbody>
-      </table>
+                <div className="mt-2">
+                  <InputLabel label="Number of guest" />
+                  <Input
+                    type="number"
+                    placeholder="1"
+                    min="1"
+                    max="14"
+                    name="guestCount"
+                    value={state?.guestCount || reservationById[0]?.guestCount}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="mt-2 flex items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <InputLabel label="Time" />
+                    <Input
+                      type="time"
+                      name="reservationTime"
+                      value={
+                        state?.reservationTime ||
+                        reservationById[0]?.reservationTime
+                      }
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={(event) => handleReservationSubmit(event)}
+                  className="md:w-full w-full mt-8"
+                >
+                  Submit Reservation
+                </Button>
+              </form>
+            </Modal>
+          </tbody>
+          <ReservationDetailModal
+            isOpen={isDetailModalOpen}
+            onClose={handleCloseDetailModal}
+            reservation={reservationById}
+          />
+        </table>
+      </div>
     </div>
   );
 };
