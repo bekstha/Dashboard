@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal } from "antd";
+import { Modal, Input } from "antd";
 import useFoodMenu from "../hooks/useFoodMenu";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Item from "../components/LunchItem";
@@ -11,19 +11,39 @@ const LunchMenu = () => {
   const [day, setDay] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const { lunchItem, updateLunch } = useFoodMenu();
+  const { lunchItem, updateLunch, deleteLunch } = useFoodMenu();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [dishName, setDishName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [addNew, setAddNew] = useState(false);
+  const [addExisting, setAddExisting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const { Search } = Input;
+
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const filteredMenu = lunchItem.filter((item) => item.day.includes(day));
+  useEffect(() => {
+    handleDayClick("Maanantai");
+  }, []);
 
   useEffect(() => {
     if (lunchItem.length > 0) {
       setLoading(false);
     }
   }, [lunchItem]);
+
+  useEffect(() => {
+    const filteredMenu = lunchItem.filter((item) => item.day.includes(day));
+    if (searchQuery !== "") {
+      const filteredData = filteredMenu.filter((item) =>
+        item.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredData(filteredData);
+    } else {
+      setFilteredData(filteredMenu);
+    }
+  }, [searchQuery, lunchItem, day]);
 
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
@@ -41,18 +61,18 @@ const LunchMenu = () => {
   const hideAddModal = () => setIsAddOpen(false);
 
   const handleDayClick = (name) => {
+    setSearchQuery("");
     setDishName(name);
     setDay(name);
   };
 
-  useEffect(() => {
-    handleDayClick("Maanantai");
-  }, []);
-
   const removeLunchItem = async (item) => {
     const itemsToDelete = day;
     // Update the day array by removing the identified items
-    const updatedDay = item.day.filter((dayItem) => !itemsToDelete.includes(dayItem));
+    const updatedDay = item.day.filter(
+      (dayItem) => !itemsToDelete.includes(dayItem)
+    );
+    console.log(`${updatedDay} ${updatedDay.length}`);
     const newData = {
       day: updatedDay,
     };
@@ -62,7 +82,11 @@ const LunchMenu = () => {
       content: `Are you sure you want to delete this item ?`,
       okButtonProps: { className: "bg-green-500 text-white" },
       onOk: () => {
-        updateLunch(item.id, newData);
+        if (updatedDay.length === 0) {
+          deleteLunch(item.id);
+        } else {
+          updateLunch(item.id, newData);
+        }
       },
       onCancel: hideDeleteModal,
     });
@@ -96,18 +120,22 @@ const LunchMenu = () => {
               <Category item="Perjantai" />
             </div>
             <div
-              onClick={() => showAddModal()}
+              onClick={() => {
+                showAddModal();
+                setAddNew(true);
+                setAddExisting(false);
+              }}
               className="flex cursor-pointer min-w-fit items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg"
             >
               <IoAddCircleOutline />
               Add new
             </div>
-            
+
             <Modal
               open={isAddOpen}
               onOk={hideAddModal}
               onCancel={hideAddModal}
-              title="Add Item"
+              title="Add Lunch Menu"
               width={700}
               footer={() => (
                 <Button
@@ -121,13 +149,49 @@ const LunchMenu = () => {
                 </Button>
               )}
             >
-              <Item />
+              <div className="flex w-full gap-5 mb-5 p-4 bg-slate-200 rounded-lg">
+                <div
+                  onClick={() => {
+                    setAddNew(true);
+                    setAddExisting(false);
+                  }}
+                  className={`flex cursor-pointer w-1/2  justify-center text-xl hover:shadow-2xl p-2  rounded-lg ${
+                    addNew === true ? "bg-green-500 text-black" : "bg-white"
+                  }`}
+                >
+                  Create new menu
+                </div>
+                <div
+                  onClick={() => {
+                    setAddExisting(true);
+                    setAddNew(false);
+                  }}
+                  className={`flex cursor-pointer w-1/2 justify-center text-xl hover:shadow-2xl p-2 rounded-lg ${
+                    addExisting === true
+                      ? "bg-green-500 text-black"
+                      : "bg-white"
+                  }`}
+                >
+                  Add existing menu
+                </div>
+              </div>
+              {addNew && <Item />}
+              {addExisting && <SearchBar />}
             </Modal>
           </div>
-          <SearchBar item={lunchItem} />
+
           <div className="m-5 rounded-lg p-3 ">
+            <Search
+              className="mb-5"
+              placeholder={`Search menu for ${day}`}
+              size="large"
+              allowClear
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ width: "100%" }}
+            />
             <hr className="border-orange-500" />
-            {filteredMenu.map((item, index) => (
+            {filteredData.map((item, index) => (
               <div
                 key={index}
                 className="lg:flex justify-between items-center w-full bg-white p-2 mb-5 mt-5 shadow-md rounded-lg"
@@ -155,7 +219,7 @@ const LunchMenu = () => {
               open={isOpen}
               onOk={hideModal}
               onCancel={hideModal}
-              title="Edit Item"
+              title="Edit Lunch Menu"
               width={700}
               footer={() => (
                 <Button

@@ -22,7 +22,7 @@ const ALaCarte = () => {
     return (
       <div
         onClick={() => handleItemClick(item, id)}
-        className={`cursor-pointer rounded-md font-bold h-fit text-medium p-2 border border-black ${
+        className={`cursor-pointer rounded-md font-bold h-fit text-medium p-2 border border shadow-md ${
           dishName === item ? "bg-green-500 text-white" : ""
         }`}
       >
