@@ -52,11 +52,11 @@ const SpecialMenu = ({}) => {
     <LoadingScreen />
   ) : (
     <div className="flex justify-center">
-      <div className="border w-full m-5 p-3 bg-slate-100">
+      <div className="border w-full m-5 p-3 bg-slate-100 rounded-lg">
         <div className="flex gap-10 justify-between">
           <button
             onClick={() => showAddModal()}
-            className="flex border h-fit items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg"
+            className="flex border h-fit items-center gap-4 sm:text-base md:text-lg text-xs hover:shadow-2xl p-2 bg-white rounded-lg"
           >
             <IoAddCircleOutline />
             Add special menu
@@ -65,7 +65,7 @@ const SpecialMenu = ({}) => {
             open={isAddOpen}
             onOk={hideAddModal}
             onCancel={hideAddModal}
-            title="Add Item"
+            title="Add Special Menu"
             width={700}
             footer={() => (
               <Button
@@ -87,16 +87,16 @@ const SpecialMenu = ({}) => {
             key={index}
             className="sm:flex w-full justify-between items-center bg-white p-2 mb-5 mt-5 shadow-md rounded-lg"
           >
-            <p className="text-medium italic tracking-wide p-3">{item.title}</p>
+            <p className="text-xs sm:text-sm md:text-base italic tracking-wide p-3">{item.title}</p>
             <div className="flex justify-items-center p-3">
               <button
-                className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8  rounded-md text-xs"
+                className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8 rounded-md w-16 sm:w-20 text-xs sm:text-sm md:text-base"
                 onClick={() => showEditModel(item)}
               >
                 Edit
               </button>
               <button
-                className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md text-xs"
+                className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md w-16 sm:w-20 text-xs sm:text-sm md:text-base"
                 onClick={() => removeItem(item.id)}
               >
                 Delete

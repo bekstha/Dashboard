@@ -10,7 +10,6 @@ import LoadingScreen from "../components/LoadingScreen";
 
 const ALaCarte = () => {
   const [itemName, setItemName] = useState("");
-  const [selectedButton, setSelectedButton] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -23,7 +22,7 @@ const ALaCarte = () => {
     return (
       <div
         onClick={() => handleItemClick(item, id)}
-        className={`cursor-pointer rounded-md font-bold h-fit text-medium p-2 border border-black ${
+        className={`cursor-pointer rounded-md md:font-bold sm:text-base md:text-lg text-xs flex justify-center h-fit w-24 md:w-28 p-2 border border shadow-md ${
           dishName === item ? "bg-green-500 text-white" : ""
         }`}
       >
@@ -59,26 +58,26 @@ const ALaCarte = () => {
     };
     return (
       <React.Fragment key={index}>
-        <div className="sm:flex justify-between items-center gap-10 w-full bg-white p-3 mt-5 shadow-md rounded-lg">
+        <div className="sm:flex justify-between items-center gap-10 w-full bg-white p-3 mb-5 shadow-md rounded-lg">
           <div className="sm:w-5/6">
             <CardHeader
               dish={dishName.title}
               price={dishName.price + `\u20AC`}
             />
             <hr className="border-orange-500" />
-            <p className="text-sm italic tracking-wide mt-2 mb-2">
+            <p className="text-xs sm:text-sm  italic tracking-wide mt-2 mb-2">
               {dishName.description}
             </p>
           </div>
           <div className="flex justify-items-center">
             <button
-              className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8 rounded-md text-xs"
+              className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8 w-16 rounded-md text-xs"
               onClick={handleEditClick}
             >
               Edit
             </button>
             <button
-              className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md text-xs"
+              className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 w-16 rounded-md text-xs"
               onClick={() => removeAlacarte(dishName.id)}
             >
               Delete
@@ -119,7 +118,6 @@ const ALaCarte = () => {
     Chicken: "chicken_dish",
     Tandoor: "tandoor_dish",
     Vegan: "vegan",
-    Drinks: "drinks",
   };
 
   const filteredItems = alaCarte
@@ -132,21 +130,20 @@ const ALaCarte = () => {
     <LoadingScreen />
   ) : (
     <div className="flex justify-center">
-      <div className="relative border w-full m-5 bg-slate-100">
+      <div className="border w-full m-5 bg-slate-100 rounded-lg">
         <div className="flex-col justify-center ">
-          <div className="flex justify-between p-3 m-5 gap-8 overflow-x-auto scrollbar-hide">
-            <div className="flex gap-8">
+          <div className="flex flex-wrap justify-between p-3 mx-5 mt-5 gap-8 overflow-x-auto scrollbar-hide">
+            <div className="flex flex-wrap gap-4">
               <Category item="Starters" />
               <Category item="Vegetarian" />
               <Category item="Lamb" />
               <Category item="Chicken" />
               <Category item="Tandoor" />
               <Category item="Vegan" />
-              <Category item="Drinks" />
             </div>
             <div
               onClick={() => showAddModal()}
-              className="flex items-center gap-4 min-w-fit h-fit text-xl hover:shadow-2xl p-2 bg-white rounded-lg cursor-pointer"
+              className="flex items-center gap-4 min-w-fit h-fit sm:text-base md:text-lg text-xs hover:shadow-2xl p-2 bg-white rounded-lg cursor-pointer"
             >
               <IoAddCircleOutline />
               Add new Item
@@ -155,7 +152,7 @@ const ALaCarte = () => {
               open={isAddOpen}
               onOk={hideAddModal}
               onCancel={hideAddModal}
-              title="Add Item"
+              title={`Add new ${dishName} menu`}
               width={700}
               footer={() => (
                 <Button
@@ -169,10 +166,10 @@ const ALaCarte = () => {
                 </Button>
               )}
             >
-              <AlaCarteItem />
+              <AlaCarteItem dishName={dishName} />
             </Modal>
           </div>
-          <div className="m-5 rounded-lg p-3">
+          <div className="mx-5 rounded-lg p-3">
             {filteredItems.length > 0 ? (
               filteredItems
             ) : (

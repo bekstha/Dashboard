@@ -38,9 +38,10 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
       setLamb(itemName.lamb_dish);
       setDishType(dishName);
     } else {
+      setDishType(dishName)
       setIsFormDirty(true);
     }
-  }, [itemId]);
+  }, [itemId, dishName]);
 
   useEffect(() => {
     if (itemId) {
@@ -187,9 +188,9 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
                 setDishType(selectedDishType);
                 handleDishTypeChange(selectedDishType);
               }}
-              className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+              className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-sm sm:text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
             >
-              <option value="">Select</option>
+              <option value="">--Select--</option>
               <option value="Chicken">Chicken</option>
               <option value="Lamb">Lamb</option>
               <option value="Starters">Starter</option>
@@ -201,15 +202,15 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
           <div className="flex-col justify-between">
             <div className="sm:w-1/3">
               <div className="mb-5">
-                <label className="mb-3 block text-base font-medium text-left">
+                <label className="mb-3 block text-sm sm:text-base font-medium text-left">
                   Gluten Free
                 </label>
                 <select
                   value={gluten_free}
                   onChange={(e) => setGlutenFree(e.target.value === "true")}
-                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-sm sm:text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
-                  <option value="">Select</option>
+                  <option value="">--Select--</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -218,15 +219,15 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
 
             <div className="sm:w-1/3">
               <div className="mb-5">
-                <label className="mb-3 block text-base font-medium text-left">
+                <label className="mb-3 block text-sm sm:text-base font-medium text-left">
                   Lactose Free
                 </label>
                 <select
                   value={lactose_free}
                   onChange={(e) => setLactoseFree(e.target.value === "true")}
-                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-sm sm:text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
-                  <option value="">Select</option>
+                  <option value="">--Select--</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -235,15 +236,15 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
 
             <div className="sm:w-1/3">
               <div className="mb-5">
-                <label className="mb-3 block text-base font-medium text-left">
+                <label className="mb-3 block text-sm sm:text-base font-medium text-left">
                   Nut Free
                 </label>
                 <select
                   value={nut_free}
                   onChange={(e) => setNutFree(e.target.value === "true")}
-                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-sm sm:text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
-                  <option value="">Select</option>
+                  <option value="">--Select--</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -253,14 +254,14 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
           <div className="flex justify-center mt-10">
             <button
               type="submit"
-              className={`w-42 p-4 rounded-xl text-white font-bold border-blue-600 ${
+              className={`w-42 p-4 rounded-xl text-white text-sm sm:text-base font-bold border-blue-600 ${
                 isSubmitDisabled()
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-blue-600"
               }`}
               disabled={isSubmitDisabled()}
             >
-              Save changes
+              {itemId === undefined ? "Add Menu" : "Save changes"}
             </button>
           </div>
         </form>
