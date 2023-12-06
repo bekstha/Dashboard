@@ -129,11 +129,12 @@ const ReservationCard = ({ reservations = [] }) => {
 
   return (
     <div>
-      <div className="bg-gray-200 p-4 flex items-center min-w-full  ">
+      <div className="bg-gray-200 p-4 flex items-center min-w-full lg:text-lg text-xs ">
         <Statistic
           title="Total Confirmed Guests"
           value={totalApprovedGuests}
           prefix={<UserOutlined />}
+          className="lg:text-lg text-xs bg-orange"
         />
       </div>
       <div className="overflow-x-auto">
