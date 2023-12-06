@@ -40,7 +40,7 @@ const Reservations = () => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <Calendar onSelectDate={handleDateSelect} />
-          <p className="ml-3">{displayDate}</p>
+          <p className="ml-3 text-sm lg:text-lg">{displayDate}</p>
         </div>
       </div>
       {!loading && (

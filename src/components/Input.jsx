@@ -14,6 +14,7 @@ const Input = ({
   onChange,
   defaultValue,
   value,
+  name,
   placeholder,
 }) => (
   <input
@@ -21,6 +22,7 @@ const Input = ({
     className={inputClasses}
     placeholder={placeholder}
     value={value}
+    name={name}
     defaultValue={defaultValue}
     onChange={onChange}
   />

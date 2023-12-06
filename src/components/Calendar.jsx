@@ -25,6 +25,7 @@ const Calendar = ({ onSelectDate }) => {
         type="primary"
         onClick={handleClick}
         icon={<CalendarOutlined className="text-black" />}
+        className="sm:text-sm md:text-base"
         style={{ maxWidth: "200px", marginTop: "10px" }}
       ></Button>
       <Modal
