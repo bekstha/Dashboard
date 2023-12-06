@@ -132,7 +132,7 @@ const ALaCarte = () => {
     <div className="flex justify-center">
       <div className="border w-full m-5 bg-slate-100 rounded-lg">
         <div className="flex-col justify-center ">
-          <div className="flex flex-wrap justify-between p-3 mx-5 mt-5 gap-8 overflow-x-auto scrollbar-hide">
+          <div className="flex flex-wrap justify-between p-3 mx-5 my-5 gap-8 overflow-x-auto scrollbar-hide">
             <div className="flex flex-wrap gap-4">
               <Category item="Starters" />
               <Category item="Vegetarian" />
