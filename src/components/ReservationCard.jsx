@@ -175,26 +175,30 @@ const ReservationCard = ({ reservations = [] }) => {
                 <TableContent
                   label={
                     <div className="flex flex-col md:flex-row gap-1 justify-center items-center">
-                      <a
-                        href={
-                          item.status !== "pending"
-                            ? "#"
-                            : `http://localhost:5173/reservation/${item.id}/decline`
-                        }
-                        className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
-                      >
-                        Decline
-                      </a>
-                      <a
-                        href={
-                          item.status !== "pending"
-                            ? "#"
-                            : `http://localhost:5173/reservation/${item.id}/approve`
-                        }
-                        className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
-                      >
-                        Approve
-                      </a>
+                      <div className="flex justify-center items-center">
+                        <a
+                          href={
+                            item.status !== "pending"
+                              ? "#"
+                              : `http://localhost:5173/reservation/${item.id}/decline`
+                          }
+                          className="bg-orange-300 w-16 hover:bg-orange-400 px-3 py-1 rounded-md text-xs flex items-center jutify-center"
+                        >
+                          Decline
+                        </a>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <a
+                          href={
+                            item.status !== "pending"
+                              ? "#"
+                              : `http://localhost:5173/reservation/${item.id}/approve`
+                          }
+                          className=" bg-red-300 w-16 hover:bg-red-400 px-3 py-1 rounded-md text-xs flex items-center jutify-center"
+                        >
+                          Approve
+                        </a>
+                      </div>
                     </div>
                   }
                 />
@@ -202,13 +206,13 @@ const ReservationCard = ({ reservations = [] }) => {
                   label={
                     <div className="flex flex-col md:flex-row gap-1 justify-center items-center">
                       <button
-                        className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs"
+                        className="bg-orange-300 hover:bg-orange-400 px-3 py-1 rounded-md text-xs flex items-center jutify-center"
                         onClick={() => modifyReservation(item.id, item)}
                       >
-                        <EditOutlined className="mr-1" />
+                        <EditOutlined className="" />
                       </button>
                       <button
-                        className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs"
+                        className="bg-red-300 hover:bg-red-400 px-3 py-1 rounded-md text-xs flex items-center jutify-center"
                         onClick={() => removeReservation(item.id)}
                       >
                         <DeleteOutlined className="mr-1" />
