@@ -4,7 +4,8 @@ import LoadingScreen from "./LoadingScreen";
 import { Checkbox } from "antd";
 import useFoodMenu from "../hooks/useFoodMenu";
 
-const Item = ({ itemId, itemName }) => {
+const Item = ({ itemId, itemName, dayName }) => {
+  console.log(dayName)
   const [lactose_free, setLactoseFree] = useState();
   const [gluten_free, setGlutenFree] = useState();
   const [nut_free, setNutFree] = useState();
@@ -21,6 +22,7 @@ const Item = ({ itemId, itemName }) => {
     "Torstai",
     "Perjantai",
   ];
+  
 
   useEffect(() => {
     if (itemId) {
@@ -30,9 +32,10 @@ const Item = ({ itemId, itemName }) => {
       setGlutenFree(itemName.gluten_free);
       setNutFree(itemName.nut_free);
     } else {
+      setDay(dayName)
       setIsFormDirty(true)
     }
-  }, [itemId]);
+  }, [itemId, dayName]);
 
   useEffect(() => {
     // Check if any of the form fields are different from their initial values
@@ -118,15 +121,15 @@ const Item = ({ itemId, itemName }) => {
           <div className="flex-col justify-between">
             <div className="sm:w-1/3">
               <div className="mb-5">
-                <label className="mb-3 block text-base font-medium text-left">
+                <label className="mb-3 block text-sm sm:text-base font-medium text-left">
                   Gluten Free
                 </label>
                 <select
                   value={gluten_free}
                   onChange={(e) => setGlutenFree(e.target.value === "true")}
-                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0] py-3 px-1 text-sm sm:text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
-                  <option value="">Select</option>
+                  <option value="">--Select--</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -135,15 +138,15 @@ const Item = ({ itemId, itemName }) => {
 
             <div className="sm:w-1/3">
               <div className="mb-5">
-                <label className="mb-3 block text-base font-medium text-left">
+                <label className="mb-3 block text-sm sm:text-base font-medium text-left">
                   Lactose Free
                 </label>
                 <select
                   value={lactose_free}
                   onChange={(e) => setLactoseFree(e.target.value === "true")}
-                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-sm sm:text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
-                  <option value="">Select</option>
+                  <option value="">--Select--</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -152,15 +155,15 @@ const Item = ({ itemId, itemName }) => {
 
             <div className="sm:w-1/3">
               <div className="mb-5">
-                <label className="mb-3 block text-base font-medium text-left">
+                <label className="mb-3 block text-sm sm:text-base font-medium text-left">
                   Nut Free
                 </label>
                 <select
                   value={nut_free}
                   onChange={(e) => setNutFree(e.target.value === "true")}
-                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full bg-gray-100 rounded-md border border-[#e0e0e0]  py-3 px-1 text-sm sm:text-base text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 >
-                  <option value="">Select</option>
+                  <option value="">--Select--</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
                 </select>
@@ -170,14 +173,14 @@ const Item = ({ itemId, itemName }) => {
           <div className="flex justify-center mt-10">
             <button
               type="submit"
-              className={`w-42 p-4 rounded-xl text-white font-bold border-blue-600 ${
+              className={`w-32 p-4 rounded-xl text-white text-base sm:text-lg border-blue-600 ${
                 isSubmitDisabled()
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-blue-600"
               }`}
               disabled={isSubmitDisabled()}
             >
-              Save changes
+              {itemId === undefined ? "Add Menu" : "Save changes"}
             </button>
           </div>
         </form>

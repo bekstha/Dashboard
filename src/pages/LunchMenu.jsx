@@ -19,13 +19,21 @@ const LunchMenu = () => {
   const [addExisting, setAddExisting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [showAll, setShowAll] = useState(false);
   const { Search } = Input;
-
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   useEffect(() => {
     handleDayClick("Maanantai");
   }, []);
+
+  useEffect(() => {
+    if (dishName === "All Menu") {
+      setShowAll(true);
+    } else {
+      setShowAll(false);
+    }
+  }, [dishName]);
 
   useEffect(() => {
     if (lunchItem.length > 0) {
@@ -34,7 +42,10 @@ const LunchMenu = () => {
   }, [lunchItem]);
 
   useEffect(() => {
-    const filteredMenu = lunchItem.filter((item) => item.day.includes(day));
+    const filteredMenu =
+      showAll === true
+        ? lunchItem
+        : lunchItem.filter((item) => item.day.includes(day));
     if (searchQuery !== "") {
       const filteredData = filteredMenu.filter((item) =>
         item.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -43,7 +54,7 @@ const LunchMenu = () => {
     } else {
       setFilteredData(filteredMenu);
     }
-  }, [searchQuery, lunchItem, day]);
+  }, [searchQuery, lunchItem, day, showAll]);
 
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
@@ -72,7 +83,7 @@ const LunchMenu = () => {
     const updatedDay = item.day.filter(
       (dayItem) => !itemsToDelete.includes(dayItem)
     );
-    console.log(`${updatedDay} ${updatedDay.length}`);
+
     const newData = {
       day: updatedDay,
     };
@@ -82,11 +93,9 @@ const LunchMenu = () => {
       content: `Are you sure you want to delete this item ?`,
       okButtonProps: { className: "bg-green-500 text-white" },
       onOk: () => {
-        if (updatedDay.length === 0) {
-          deleteLunch(item.id);
-        } else {
-          updateLunch(item.id, newData);
-        }
+        showAll || updatedDay.length === 0
+          ? deleteLunch(item.id)
+          : updateLunch(item.id, newData);
       },
       onCancel: hideDeleteModal,
     });
@@ -96,7 +105,7 @@ const LunchMenu = () => {
     return (
       <div
         onClick={() => handleDayClick(item)}
-        className={`cursor-pointer rounded-md font-bold text-medium h-fit p-2 border shadow-md ${
+        className={`cursor-pointer rounded-md md:font-bold text-xs sm:text-base md:text-lg flex justify-center h-fit w-20 sm:w-24 md:w-32 p-2 border shadow-md ${
           dishName === item ? "bg-green-500 text-black" : ""
         }`}
       >
@@ -112,12 +121,13 @@ const LunchMenu = () => {
       <div className="border w-full m-5 bg-slate-100 rounded-lg">
         <div className="flex-col justify-center ">
           <div className="flex flex-wrap justify-between items-center p-3 m-5 gap-8">
-            <div className="flex flex-wrap gap-8">
+            <div className="flex flex-wrap gap-4">
               <Category item="Maanantai" />
               <Category item="Tiistai" />
               <Category item="Keskiviikko" />
               <Category item="Torstai" />
               <Category item="Perjantai" />
+              <Category item="All Menu" />
             </div>
             <div
               onClick={() => {
@@ -125,17 +135,17 @@ const LunchMenu = () => {
                 setAddNew(true);
                 setAddExisting(false);
               }}
-              className="flex cursor-pointer min-w-fit items-center gap-4 text-xl hover:shadow-2xl p-2 bg-white rounded-lg"
+              className="flex cursor-pointer min-w-fit items-center gap-4 sm:text-base md:text-lg text-xs hover:shadow-2xl p-2 bg-white rounded-lg"
             >
               <IoAddCircleOutline />
-              Add new
+              Add new Menu
             </div>
 
             <Modal
               open={isAddOpen}
               onOk={hideAddModal}
               onCancel={hideAddModal}
-              title="Add Lunch Menu"
+              title={`Add Lunch Menu for ${day}`}
               width={700}
               footer={() => (
                 <Button
@@ -155,7 +165,7 @@ const LunchMenu = () => {
                     setAddNew(true);
                     setAddExisting(false);
                   }}
-                  className={`flex cursor-pointer w-1/2  justify-center text-xl hover:shadow-2xl p-2  rounded-lg ${
+                  className={`flex cursor-pointer w-1/2  justify-center items-center text-xs sm:text-base md:text-lg hover:shadow-2xl p-2  rounded-lg ${
                     addNew === true ? "bg-green-500 text-black" : "bg-white"
                   }`}
                 >
@@ -166,7 +176,7 @@ const LunchMenu = () => {
                     setAddExisting(true);
                     setAddNew(false);
                   }}
-                  className={`flex cursor-pointer w-1/2 justify-center text-xl hover:shadow-2xl p-2 rounded-lg ${
+                  className={`flex cursor-pointer w-1/2 justify-center items-center text-xs sm:text-base md:text-lg hover:shadow-2xl p-2 rounded-lg ${
                     addExisting === true
                       ? "bg-green-500 text-black"
                       : "bg-white"
@@ -175,15 +185,17 @@ const LunchMenu = () => {
                   Add existing menu
                 </div>
               </div>
-              {addNew && <Item />}
-              {addExisting && <SearchBar />}
+              {addNew && <Item dayName={day} />}
+              {addExisting && <SearchBar day={day} />}
             </Modal>
           </div>
 
           <div className="m-5 rounded-lg p-3 ">
             <Search
-              className="mb-5"
-              placeholder={`Search menu for ${day}`}
+              className="mb-4"
+              placeholder={
+                showAll === true ? `Search ${day}` : `Search menu for ${day}`
+              }
               size="large"
               allowClear
               value={searchQuery}
@@ -196,18 +208,18 @@ const LunchMenu = () => {
                 key={index}
                 className="lg:flex justify-between items-center w-full bg-white p-2 mb-5 mt-5 shadow-md rounded-lg"
               >
-                <p className="text-medium italic tracking-wide p-3">
+                <p className="text-xs sm:text-sm md:text-base italic tracking-wide p-3">
                   {item.description}
                 </p>
                 <div className="flex justify-items-center p-3">
                   <button
-                    className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8  rounded-md text-xs"
+                    className="bg-orange-300 hover:bg-orange-400 px-3 py-1 h-8 w-16 sm:w-20 text-xs sm:text-sm md:text-base rounded-md"
                     onClick={() => showModal(item)}
                   >
                     Edit
                   </button>
                   <button
-                    className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md text-xs"
+                    className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 w-16 sm:w-20 rounded-md text-xs sm:text-sm md:text-base"
                     onClick={() => removeLunchItem(item)}
                   >
                     Delete

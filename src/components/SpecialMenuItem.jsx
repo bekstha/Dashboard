@@ -270,7 +270,7 @@ const SpecialMenuItem = ({ itemId, itemName }) => {
                   : "bg-blue-600"
               }`}
             >
-              Save changes
+              {itemId === undefined ? "Add Menu" : "Save changes"}
             </button>
           </div>
         </form>
