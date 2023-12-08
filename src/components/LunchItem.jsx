@@ -173,7 +173,7 @@ const Item = ({ itemId, itemName, dayName }) => {
           <div className="flex justify-center mt-10">
             <button
               type="submit"
-              className={`w-32 p-4 rounded-xl text-white text-base sm:text-lg border-blue-600 ${
+              className={`w-36 p-4 rounded-xl text-white text-base sm:text-lg border-blue-600 ${
                 isSubmitDisabled()
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-blue-600"

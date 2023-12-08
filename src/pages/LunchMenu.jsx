@@ -61,6 +61,7 @@ const LunchMenu = () => {
   const showModal = (item) => {
     setIsOpen(true);
     setSelectedItem(item);
+    console.log(item)
   };
 
   const hideModal = () => {
@@ -106,7 +107,7 @@ const LunchMenu = () => {
       <div
         onClick={() => handleDayClick(item)}
         className={`cursor-pointer rounded-md md:font-bold text-xs sm:text-base md:text-lg flex justify-center h-fit w-20 sm:w-24 md:w-32 p-2 border shadow-md ${
-          dishName === item ? "bg-green-500 text-black" : ""
+          dishName === item ? "bg-green-500 text-black" : "bg-white"
         }`}
       >
         {item}
@@ -246,7 +247,7 @@ const LunchMenu = () => {
             >
               {selectedItem && (
                 <div>
-                  <Item itemId={selectedItem.id} itemName={selectedItem} />
+                  <Item itemId={selectedItem.id} itemName={selectedItem} dayName={day} />
                 </div>
               )}
             </Modal>

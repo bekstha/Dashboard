@@ -23,7 +23,7 @@ const ALaCarte = () => {
       <div
         onClick={() => handleItemClick(item, id)}
         className={`cursor-pointer rounded-md md:font-bold sm:text-base md:text-lg text-xs flex justify-center h-fit w-24 md:w-28 p-2 border border shadow-md ${
-          dishName === item ? "bg-green-500 text-white" : ""
+          dishName === item ? "bg-green-500 text-white" : "bg-white"
         }`}
       >
         {item}
@@ -52,7 +52,18 @@ const ALaCarte = () => {
     });
   };
 
+  const checkGLP = (itemName) => {
+    const components = [];
+  
+    if (itemName.gluten_free) components.push("G");
+    if (itemName.lactose_free) components.push("L");
+    if (itemName.nut_free) components.push("P");
+  
+    return `(${components.join(', ')})`;
+  };
+
   const DishItems = ({ dishName, index }) => {
+    const valueGLP = checkGLP(dishName);
     const handleEditClick = () => {
       showEditModal(dishName);
     };
@@ -61,7 +72,7 @@ const ALaCarte = () => {
         <div className="sm:flex justify-between items-center gap-10 w-full bg-white p-3 mb-5 shadow-md rounded-lg">
           <div className="sm:w-5/6">
             <CardHeader
-              dish={dishName.title}
+              dish={dishName.title +" "+ valueGLP}
               price={dishName.price + `\u20AC`}
             />
             <hr className="border-orange-500" />
