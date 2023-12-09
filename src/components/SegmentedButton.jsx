@@ -1,4 +1,3 @@
-
 const SegmentedButton = ({ isOpen, onToggle }) => {
   return (
     <div className="flex h-18 mt-3">

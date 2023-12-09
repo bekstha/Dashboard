@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Input, InputLabel, Textarea } from "./Input";
 import LoadingScreen from "./LoadingScreen";
 import { Checkbox } from "antd";

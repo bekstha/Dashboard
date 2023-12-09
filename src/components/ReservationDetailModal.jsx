@@ -1,7 +1,4 @@
-// ReservationDetailModal.js
-
 import { Modal } from "antd";
-import React from "react";
 
 const ReservationDetailModal = ({ isOpen, onClose, reservation }) => {
   return (

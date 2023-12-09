@@ -1,5 +1,3 @@
-import React from "react";
-
 const btnClasses = "w-32 md:w-32 text-lg rounded-md duration-200";
 
 const colors = {

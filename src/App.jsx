@@ -12,7 +12,6 @@ import SpecialMenu from "./pages/SpecialMenu";
 import SignIn from "./pages/SignIn";
 import { useMainContext } from "./contexts/MainContextProvider";
 import { BrowserRouter as Router } from "react-router-dom";
-import { RouteRounded } from "@mui/icons-material";
 
 function App() {
   const { activeMenu } = useStateContext();

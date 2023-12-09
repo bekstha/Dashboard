@@ -1,4 +1,4 @@
-import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useState } from "react";
 import Button from "./Button";

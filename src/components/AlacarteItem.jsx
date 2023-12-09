@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Input, InputLabel, Textarea } from "./Input";
 import { db } from "../config/firebase";
-import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
 
 const AlaCarteItem = ({ itemId, itemName, dishName }) => {
-  console.log(dishName)
+  console.log(dishName);
   const [lactose_free, setLactoseFree] = useState("");
   const [gluten_free, setGlutenFree] = useState("");
   const [nut_free, setNutFree] = useState("");
@@ -38,7 +38,7 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
       setLamb(itemName.lamb_dish);
       setDishType(dishName);
     } else {
-      setDishType(dishName)
+      setDishType(dishName);
       setIsFormDirty(true);
     }
   }, [itemId, dishName]);
@@ -77,8 +77,14 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
   ]);
 
   const isFormEmpty = () => {
-    return !title.trim() || !description.trim() || lactose_free === "" || 
-            gluten_free === "" || nut_free === "" || dishType === "" ;
+    return (
+      !title.trim() ||
+      !description.trim() ||
+      lactose_free === "" ||
+      gluten_free === "" ||
+      nut_free === "" ||
+      dishType === ""
+    );
   };
 
   const isSubmitDisabled = () => {
@@ -98,7 +104,7 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     try {
       setLoading(true);
       const alaCarteCollection = collection(db, "A_La_Carte");

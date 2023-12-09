@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../config/firebase";
 import { updateDoc, doc } from "firebase/firestore";
 import useOpeningHours from "../hooks/useOpeningHours";

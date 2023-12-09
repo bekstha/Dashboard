@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Input, InputLabel } from "./Input";
 import LoadingScreen from "./LoadingScreen";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
@@ -65,8 +65,11 @@ const SpecialMenuItem = ({ itemId, itemName }) => {
   ]);
 
   function arraysEqual(arr1, arr2) {
-    return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
-  };
+    return (
+      arr1.length === arr2.length &&
+      arr1.every((value, index) => value === arr2[index])
+    );
+  }
 
   const isFormEmpty = () => {
     return (
