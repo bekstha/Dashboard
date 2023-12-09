@@ -12,6 +12,7 @@ import SpecialMenu from "./pages/SpecialMenu";
 import SignIn from "./pages/SignIn";
 import { useMainContext } from "./contexts/MainContextProvider";
 import { BrowserRouter as Router } from "react-router-dom";
+import { RouteRounded } from "@mui/icons-material";
 
 function App() {
   const { activeMenu } = useStateContext();
@@ -47,6 +48,7 @@ function App() {
 
               <div className="p-4">
                 <Routes>
+                  <Route path="/" element={<LunchMenu />} />
                   <Route path="/reservations" element={<Reservations />} />
                   <Route path="/lunchMenu" element={<LunchMenu />} />
                   <Route path="/alacarte" element={<ALaCarte />} />

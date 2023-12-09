@@ -7,7 +7,7 @@ import useSignIn from "../hooks/authHooks";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setAdminStatus } = useMainContext();
+  const { setAdminStatus, setUserIsLoggedIn, setActiveTitle } = useMainContext();
   const navigate = useNavigate();
   const { loading, error, signIn } = useSignIn();
 
@@ -16,11 +16,16 @@ const SignIn = () => {
       const { admin, user } = await signIn(values.email, values.password);
 
       if (admin) {
-        setAdminStatus(true);
+        setAdminStatus(true)
+        setUserIsLoggedIn(true)
+        setActiveTitle("Lunch Menu");
+
         message.success("User logged in as Admin");
         navigate("/LunchMenu");
       } else {
-        setAdminStatus(false);
+        setAdminStatus(false)
+        setUserIsLoggedIn(false)
+        setActiveTitle("");
         message.warning("User is not an Admin");
       }
     } catch (error) {
