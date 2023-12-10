@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "kasthamandap-cdfd4"
+  },
+  "targets": {
+    "kasthamandap-cdfd4": {
+      "hosting": {
+        "admin": [
+          "kasthamandap-admin"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
