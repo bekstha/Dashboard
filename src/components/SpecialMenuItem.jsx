@@ -169,7 +169,7 @@ const SpecialMenuItem = ({ itemId, itemName }) => {
             <InputLabel label="Price" />
             <Input
               type="text"
-              placeholder="Price(normalli, lapset(6-12), lapset(3-5))"
+              placeholder="Normalli, lapset(6-12), lapset(3-5)"
               value={price}
               onChange={(e) => {
                 const input = e.target.value;

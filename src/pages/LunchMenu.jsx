@@ -107,7 +107,7 @@ const LunchMenu = () => {
       <div
         onClick={() => handleDayClick(item)}
         className={`cursor-pointer rounded-md md:font-bold text-xs sm:text-base md:text-lg flex justify-center h-fit w-20 sm:w-24 md:w-32 p-2 border shadow-md ${
-          dishName === item ? "bg-green-500 text-black" : "bg-white"
+          dishName === item ? "bg-green-500 text-white" : "bg-white"
         }`}
       >
         {item}
