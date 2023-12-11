@@ -5,7 +5,6 @@ import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
 
 const AlaCarteItem = ({ itemId, itemName, dishName }) => {
-  console.log(dishName);
   const [lactose_free, setLactoseFree] = useState("");
   const [gluten_free, setGlutenFree] = useState("");
   const [nut_free, setNutFree] = useState("");
@@ -93,7 +92,6 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
 
   const handleDishTypeChange = (selectedDishType) => {
     setDishType(selectedDishType);
-    console.log(selectedDishType);
     setChicken(selectedDishType === "Chicken");
     setStarter(selectedDishType === "Starters");
     setTandoor(selectedDishType === "Tandoor");

@@ -5,7 +5,6 @@ import { Checkbox } from "antd";
 import useFoodMenu from "../hooks/useFoodMenu";
 
 const Item = ({ itemId, itemName, dayName }) => {
-  console.log(dayName)
   const [lactose_free, setLactoseFree] = useState();
   const [gluten_free, setGlutenFree] = useState();
   const [nut_free, setNutFree] = useState();

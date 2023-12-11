@@ -30,7 +30,6 @@ const Sidebar = () => {
       console.error("Sign out error:", error.message);
       message.error(error.message);
     }
-    console.log("signed out clicked");
   };
 
   const handleCloseSideBar = () => {

@@ -40,7 +40,6 @@ const ALaCarte = () => {
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
   const removeAlacarte = async (id) => {
-    console.log(id);
     Modal.confirm({
       title: "Confirm Delete",
       content: "Are you sure you want to delete this Item?",

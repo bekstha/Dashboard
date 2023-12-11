@@ -36,7 +36,6 @@ const Reservations = () => {
     <LoadingScreen />
   ) : (
     <div className="container overflow-scroll mx-auto my-8 bg-slate-100 p-5 rounded-xl text-blue-950 mt-20 md:mt-5 ">
-      {/* {console.log(selectedDate)} */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <Calendar onSelectDate={handleDateSelect} />

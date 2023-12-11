@@ -19,14 +19,23 @@ const useSignIn = () => {
       const adminQuery = query(adminCollection, where("email", "==", email));
       const adminSnapshot = await getDocs(adminQuery);
 
+      // Check if the authenticated email exists in the "Moderators" collection
+      const modsCollection = collection(db, "Moderators");
+      const modsQuery = query(modsCollection, where("email", "==", email));
+      const modsSnapshot = await getDocs(modsQuery);
+
       if (adminSnapshot.docs.length > 0) {
         // Email exists in the "Admin" collection
         setLoading(false);
         return { admin: true, user };
-      } else {
-        // Email does not exist in the "Admin" collection
+      } else if (modsSnapshot.docs.length > 0) {
+        // Email exists in the "Moderators" collection
         setLoading(false);
-        return { admin: false, user };
+        return { admin: false, moderator: true, user };
+      } else {
+        // Email does not exist in the "Admin" or "Moderators" collection
+        setLoading(false);
+        return { admin: false, moderator: false, user };
       }
     } catch (error) {
       setLoading(false);

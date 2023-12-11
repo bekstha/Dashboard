@@ -23,7 +23,6 @@ const SearchBar = ({ day }) => {
   }, [searchQuery, lunchItem]);
 
   const addLunchItem = async (item) => {
-    console.log(item.day);
     const dayToAdd = day;
     const isDayAlreadyPresent = item.day.includes(dayToAdd);
     if(!isDayAlreadyPresent) {
