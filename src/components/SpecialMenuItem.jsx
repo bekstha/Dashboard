@@ -3,8 +3,9 @@ import { Input, InputLabel } from "./Input";
 import LoadingScreen from "./LoadingScreen";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
+import Success from "./Success";
 
-const SpecialMenuItem = ({ itemId, itemName }) => {
+const SpecialMenuItem = ({ itemId, itemName, hideEditModal, hideAddModal }) => {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [startDay, setStartDay] = useState();
@@ -17,6 +18,7 @@ const SpecialMenuItem = ({ itemId, itemName }) => {
   const [beverage, setBeverages] = useState([]);
   const [message, setMessage] = useState("");
   const [isFormDirty, setIsFormDirty] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     if (itemId) {
@@ -31,9 +33,20 @@ const SpecialMenuItem = ({ itemId, itemName }) => {
       setBeverages(itemName.beverage);
       setMessage(itemName.message);
     } else {
+      setTitle("");
+      setStartDay("");
+      setEndDay("");
+      setPrice("");
+      setStarters("");
+      setLightbites("");
+      setMaincourse("");
+      setDessert("");
+      setBeverages("");
+      setMessage("");
       setIsFormDirty(true);
     }
-  }, [itemId]);
+    setIsSuccess(false);
+  }, [itemId, hideEditModal, hideAddModal]);
 
   useEffect(() => {
     if (itemId) {
@@ -128,12 +141,15 @@ const SpecialMenuItem = ({ itemId, itemName }) => {
       console.error("Error submitting form:", error);
     } finally {
       setLoading(false);
+      setIsSuccess(true);
     }
   };
 
   return loading ? (
     <LoadingScreen />
-  ) : (
+  ) : ( isSuccess ? 
+    (<Success itemId={itemId} description={title} />) 
+    : (
     <div className="flex-col p-5 bg-slate-200 rounded-lg p-5 m-4">
       <div className="flex-col justify-between">
         <form onSubmit={handleSubmit}>
@@ -279,6 +295,7 @@ const SpecialMenuItem = ({ itemId, itemName }) => {
         </form>
       </div>
     </div>
+    )
   );
 };
 

@@ -5,6 +5,7 @@ import Modal from "antd/es/modal/Modal";
 import SpecialMenuItem from "../components/SpecialMenuItem";
 import useSpecialMenu from "../hooks/useSpecialMenu";
 import LoadingScreen from "../components/LoadingScreen";
+import { Result } from "antd";
 
 const SpecialMenu = ({}) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -13,6 +14,7 @@ const SpecialMenu = ({}) => {
   const { specialMenu, deleteSpecial } = useSpecialMenu();
   const [loading, setLoading] = useState(true);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const showAddModal = () => setIsAddOpen(true);
   const hideAddModal = () => setIsAddOpen(false);
@@ -29,14 +31,15 @@ const SpecialMenu = ({}) => {
     setSelectedItem(null);
   };
 
-  const removeItem = async (id) => {
-    console.log(id);
+  const removeItem = async (item) => {
+    setSelectedItem(item);
     Modal.confirm({
       title: "Confirm Delete",
       content: "Are you sure you want to delete this Item?",
       okButtonProps: { className: "bg-green-500 text-white" },
       onOk: () => {
-        deleteSpecial(id);
+        deleteSpecial(item.id);
+        setIsSuccess(true);
       },
       onCancel: hideDeleteModal,
     });
@@ -79,9 +82,22 @@ const SpecialMenu = ({}) => {
               </Button>
             )}
           >
-            <SpecialMenuItem />
+            <SpecialMenuItem hideAddModal={hideAddModal} />
           </Modal>
         </div>
+        {isSuccess && (
+              <Result
+                className="bg-white shadow-md border rounded fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:m-10"
+                status="success"
+                title={"Successfully Deleted menu"}
+                subTitle={`Item: ${selectedItem.title}`}
+                extra={[
+                  <Button type="default" key="console" onClick={() => setIsSuccess(false)}>
+                    Close
+                  </Button>,
+                ]}
+              />
+            )}
         {specialMenu.map((item, index) => (
           <div
             key={index}
@@ -97,7 +113,7 @@ const SpecialMenu = ({}) => {
               </button>
               <button
                 className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 rounded-md w-16 sm:w-20 text-xs sm:text-sm md:text-base"
-                onClick={() => removeItem(item.id)}
+                onClick={() => removeItem(item)}
               >
                 Delete
               </button>
@@ -122,6 +138,7 @@ const SpecialMenu = ({}) => {
               {selectedItem && (
                 <div>
                   <SpecialMenuItem
+                    hideEditModal={hideEditModal}
                     itemId={selectedItem.id}
                     itemName={selectedItem}
                   />

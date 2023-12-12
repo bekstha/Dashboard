@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 import useAlacarteMenu from "../hooks/useAlaCarteMenu";
 import CardHeader from "../components/CardHeader";
-import { Modal } from "antd";
+import { Modal, Result } from "antd";
 import Button from "../components/Button";
 import AlaCarteItem from "../components/AlacarteItem";
 import LoadingScreen from "../components/LoadingScreen";
@@ -17,6 +17,7 @@ const ALaCarte = () => {
   const [dishName, setDishName] = useState("");
   const [loading, setLoading] = useState(true);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const Category = ({ item, id }) => {
     return (
@@ -39,14 +40,15 @@ const ALaCarte = () => {
 
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
-  const removeAlacarte = async (id) => {
-    console.log(id);
+  const removeAlacarte = async (item) => {
+    setSelectedItem(item);
     Modal.confirm({
       title: "Confirm Delete",
       content: "Are you sure you want to delete this Item?",
       okButtonProps: { className: "bg-green-500 text-white" },
       onOk: () => {
-        deleteAlaCarte(id);
+        deleteAlaCarte(item.id);
+        setIsSuccess(true);
       },
       onCancel: hideDeleteModal,
     });
@@ -89,7 +91,7 @@ const ALaCarte = () => {
             </button>
             <button
               className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 w-16 rounded-md text-xs"
-              onClick={() => removeAlacarte(dishName.id)}
+              onClick={() => removeAlacarte(dishName)}
             >
               Delete
             </button>
@@ -177,10 +179,23 @@ const ALaCarte = () => {
                 </Button>
               )}
             >
-              <AlaCarteItem dishName={dishName} />
+              <AlaCarteItem dishName={dishName} hideAddModal={hideAddModal} />
             </Modal>
           </div>
           <div className="mx-5 rounded-lg p-3">
+          {isSuccess && (
+              <Result
+                className="bg-white shadow-md border rounded fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:m-10"
+                status="success"
+                title={"Successfully Deleted menu"}
+                subTitle={`Item: ${selectedItem.title}`}
+                extra={[
+                  <Button type="default" key="console" onClick={() => setIsSuccess(false)}>
+                    Close
+                  </Button>,
+                ]}
+              />
+            )}
             {filteredItems.length > 0 ? (
               filteredItems
             ) : (
@@ -211,6 +226,7 @@ const ALaCarte = () => {
                     itemId={selectedItem.id}
                     itemName={selectedItem}
                     dishName={dishName}
+                    hideEditModal={hideEditModal}
                   />
                 </div>
               )}

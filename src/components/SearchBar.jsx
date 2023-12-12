@@ -3,13 +3,16 @@ import { Input, Modal } from "antd";
 import { PlusCircleFilled } from '@ant-design/icons';
 import { useEffect } from "react";
 import useFoodMenu from "../hooks/useFoodMenu";
+import Success from "./Success";
 
-const SearchBar = ({ day }) => {
+const SearchBar = ({ hideAddModal, day }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { Search } = Input;
   const { lunchItem, updateLunch } = useFoodMenu();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     if (searchQuery !== "") {
@@ -20,9 +23,10 @@ const SearchBar = ({ day }) => {
     } else {
       setFilteredData(lunchItem);
     }
-  }, [searchQuery, lunchItem]);
+  }, [searchQuery, lunchItem, hideAddModal]);
 
   const addLunchItem = async (item) => {
+    setSelectedItem(item);
     console.log(item.day);
     const dayToAdd = day;
     const isDayAlreadyPresent = item.day.includes(dayToAdd);
@@ -36,6 +40,7 @@ const SearchBar = ({ day }) => {
         okButtonProps: { className: "bg-green-500 text-white" },
         onOk: () => {
           updateLunch(item.id, newData)
+          setIsSuccess(true)
         },
         onCancel: hideDeleteModal,
       });
@@ -59,6 +64,9 @@ const SearchBar = ({ day }) => {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
+      {isSuccess ? (
+        (<Success description={selectedItem.description}  />) 
+      ) : (
         <div className="bg-slate-100 rounded-lg w-full flex-col items-center my-5 border shadow-lg px-3">
           <p className="font-bold italic p-2">List of available menus...</p>
           {filteredData.map((item, index) => (
@@ -78,6 +86,8 @@ const SearchBar = ({ day }) => {
             </div>
           ))}
         </div>
+      )}
+
     </div>
   );
 };

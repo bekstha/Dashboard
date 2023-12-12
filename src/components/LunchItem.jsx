@@ -3,9 +3,9 @@ import { Input, InputLabel, Textarea } from "./Input";
 import LoadingScreen from "./LoadingScreen";
 import { Checkbox } from "antd";
 import useFoodMenu from "../hooks/useFoodMenu";
+import Success from "./Success";
 
-const Item = ({ itemId, itemName, dayName }) => {
-  console.log(dayName)
+const Item = ({ hideAddModal, hideModal, itemId, itemName, dayName }) => {
   const [lactose_free, setLactoseFree] = useState();
   const [gluten_free, setGlutenFree] = useState();
   const [nut_free, setNutFree] = useState();
@@ -14,6 +14,7 @@ const Item = ({ itemId, itemName, dayName }) => {
   const [loading, setLoading] = useState(false);
   const [isFormDirty, setIsFormDirty] = useState(false);
   const { updateLunch, addLunch } = useFoodMenu()
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const plainOptions = [
     "Maanantai",
@@ -22,7 +23,6 @@ const Item = ({ itemId, itemName, dayName }) => {
     "Torstai",
     "Perjantai",
   ];
-  
 
   useEffect(() => {
     if (itemId) {
@@ -32,10 +32,15 @@ const Item = ({ itemId, itemName, dayName }) => {
       setGlutenFree(itemName.gluten_free);
       setNutFree(itemName.nut_free);
     } else {
+      setDescription("");
+      setLactoseFree("");
+      setGlutenFree("");
+      setNutFree("");
       setDay(dayName)
       setIsFormDirty(true)
     }
-  }, [itemId, dayName]);
+    setIsSuccess(false);
+  }, [itemId, dayName, hideModal, hideAddModal]);
 
   useEffect(() => {
     // Check if any of the form fields are different from their initial values
@@ -82,14 +87,16 @@ const Item = ({ itemId, itemName, dayName }) => {
       console.error("Error submitting form:", error);
     } finally {
       setLoading(false);
-      window.location.href = "./LunchMenu";
+      setIsSuccess(true);
     }
   };
 
   return loading ? (
     <LoadingScreen />
-  ) : (
-    <div className="flex-col p-5 bg-slate-200 rounded-lg">
+  ) : ( isSuccess ? 
+    (<Success itemId={itemId} description={description} />) 
+    : (
+      <div className="flex-col p-5 bg-slate-200 rounded-lg">
       <div className="flex-col justify-between">
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
@@ -186,7 +193,8 @@ const Item = ({ itemId, itemName, dayName }) => {
         </form>
       </div>
     </div>
-  );
+    )
+    );
 };
 
 export default Item;

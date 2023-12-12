@@ -3,8 +3,9 @@ import { Input, InputLabel, Textarea } from "./Input";
 import { db } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
+import Success from "./Success";
 
-const AlaCarteItem = ({ itemId, itemName, dishName }) => {
+const AlaCarteItem = ({ itemId, itemName, dishName, hideEditModal, hideAddModal }) => {
   console.log(dishName);
   const [lactose_free, setLactoseFree] = useState("");
   const [gluten_free, setGlutenFree] = useState("");
@@ -21,6 +22,7 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [isFormDirty, setIsFormDirty] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     if (itemId) {
@@ -38,10 +40,24 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
       setLamb(itemName.lamb_dish);
       setDishType(dishName);
     } else {
+      setTitle("");
+      setDescription("");
+      setLactoseFree("");
+      setGlutenFree("");
+      setNutFree("");
+      setPrice("");
+      setChicken("");
+      setStarter("");
+      setTandoor("");
+      setVegetarian("");
+      setVegan("");
+      setLamb("");
+      setDishType(dishName);
       setDishType(dishName);
       setIsFormDirty(true);
     }
-  }, [itemId, dishName]);
+    setIsSuccess(false);
+  }, [itemId, dishName, hideEditModal, hideAddModal]);
 
   useEffect(() => {
     if (itemId) {
@@ -145,13 +161,15 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
       console.error("Error submitting form:", error);
     } finally {
       setLoading(false);
-      window.location.href = "./AlaCarte";
+      setIsSuccess(true);
     }
   };
 
   return loading ? (
     <LoadingScreen />
-  ) : (
+  ) : (  isSuccess ? 
+    (<Success itemId={itemId} description={title} />) 
+    : (
     <div className="flex-col p-5 bg-slate-200 rounded-lg">
       <div className="flex-col justify-between">
         <form onSubmit={handleSubmit}>
@@ -273,6 +291,7 @@ const AlaCarteItem = ({ itemId, itemName, dishName }) => {
         </form>
       </div>
     </div>
+    )
   );
 };
 

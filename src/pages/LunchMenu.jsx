@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal, Input } from "antd";
+import { Modal, Input, Result } from "antd";
 import useFoodMenu from "../hooks/useFoodMenu";
 import { IoAddCircleOutline } from "react-icons/io5";
 import Item from "../components/LunchItem";
@@ -22,6 +22,7 @@ const LunchMenu = () => {
   const [showAll, setShowAll] = useState(false);
   const { Search } = Input;
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     handleDayClick("Maanantai");
@@ -56,12 +57,15 @@ const LunchMenu = () => {
     }
   }, [searchQuery, lunchItem, day, showAll]);
 
-  const hideDeleteModal = () => setIsDeleteModalVisible(false);
+  const hideDeleteModal = () => {
+    setIsDeleteModalVisible(false);
+    setIsSuccess(false);
+  };
 
   const showModal = (item) => {
     setIsOpen(true);
     setSelectedItem(item);
-    console.log(item)
+    console.log(item);
   };
 
   const hideModal = () => {
@@ -70,7 +74,9 @@ const LunchMenu = () => {
   };
 
   const showAddModal = () => setIsAddOpen(true);
-  const hideAddModal = () => setIsAddOpen(false);
+  const hideAddModal = () => {
+    setIsAddOpen(false);
+  };
 
   const handleDayClick = (name) => {
     setSearchQuery("");
@@ -79,6 +85,7 @@ const LunchMenu = () => {
   };
 
   const removeLunchItem = async (item) => {
+    setSelectedItem(item);
     const itemsToDelete = day;
     // Update the day array by removing the identified items
     const updatedDay = item.day.filter(
@@ -97,6 +104,7 @@ const LunchMenu = () => {
         showAll || updatedDay.length === 0
           ? deleteLunch(item.id)
           : updateLunch(item.id, newData);
+        setIsSuccess(true);
       },
       onCancel: hideDeleteModal,
     });
@@ -186,8 +194,8 @@ const LunchMenu = () => {
                   Add existing menu
                 </div>
               </div>
-              {addNew && <Item dayName={day} />}
-              {addExisting && <SearchBar day={day} />}
+              {addNew && <Item dayName={day} hideAddModal={hideAddModal} />}
+              {addExisting && <SearchBar day={day} hideAddModal={hideAddModal}  />}
             </Modal>
           </div>
 
@@ -204,6 +212,19 @@ const LunchMenu = () => {
               style={{ width: "100%" }}
             />
             <hr className="border-orange-500" />
+            {isSuccess && (
+              <Result
+                className="bg-white shadow-md border rounded fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:m-10"
+                status="success"
+                title={"Successfully Deleted Lunch menu"}
+                subTitle={`Menu item: ${selectedItem.description}`}
+                extra={[
+                  <Button type="default" key="console" onClick={() => setIsSuccess(false)}>
+                    Close
+                  </Button>,
+                ]}
+              />
+            )}
             {filteredData.map((item, index) => (
               <div
                 key={index}
@@ -221,7 +242,9 @@ const LunchMenu = () => {
                   </button>
                   <button
                     className="ml-2 bg-red-300 hover:bg-red-400 px-3 py-1 h-8 w-16 sm:w-20 rounded-md text-xs sm:text-sm md:text-base"
-                    onClick={() => removeLunchItem(item)}
+                    onClick={() => {
+                      removeLunchItem(item);
+                    }}
                   >
                     Delete
                   </button>
@@ -247,7 +270,12 @@ const LunchMenu = () => {
             >
               {selectedItem && (
                 <div>
-                  <Item itemId={selectedItem.id} itemName={selectedItem} dayName={day} />
+                  <Item
+                    hideModal={hideModal}
+                    itemId={selectedItem.id}
+                    itemName={selectedItem}
+                    dayName={day}
+                  />
                 </div>
               )}
             </Modal>
