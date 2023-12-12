@@ -60,7 +60,6 @@ const ReservationCard = ({ reservations = [] }) => {
   const hideDeleteModal = () => setIsDeleteModalVisible(false);
 
   const removeReservation = async (id) => {
-    console.log(id);
     Modal.confirm({
       title: "Confirm Delete",
       content: "Are you sure you want to delete this Item?",
@@ -74,7 +73,6 @@ const ReservationCard = ({ reservations = [] }) => {
 
   const handleInputChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.value });
-    console.log({ name: event.target });
   };
   const handleReservationClick = (id) => {
     setSelectedID(id);

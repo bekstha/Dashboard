@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "../config/firebase";
 import { collection, deleteDoc, doc, onSnapshot, query, setDoc, addDoc } from "firebase/firestore";
+import { message } from "antd";
 
 function useFoodMenu() {
   const [lunchItem, setLunchItem] = useState([]);
@@ -20,8 +21,9 @@ function useFoodMenu() {
   const deleteLunch = async (lunchId) => {
     try {
       await deleteDoc(doc(db, "LunchMenu", lunchId));
+      message.success("Lunch deleted successfully!");
     } catch (error) {
-      console.error("Error deleting Lunch Item:", error);
+      message.error( error);
       throw error;
     }
   };
@@ -30,9 +32,9 @@ function useFoodMenu() {
     try {
       const lunchRef = doc(db, "LunchMenu", lunchId);
       await setDoc(lunchRef, newData, { merge: true });
-      console.log("Lunch updated successfully!");
+      message.success("Lunch updated successfully!");
     } catch (error) {
-      console.error("Error updating Lunch:", error);
+      message.error(error);
       throw error;
     }
   };
@@ -46,9 +48,9 @@ function useFoodMenu() {
         nut_free,
         gluten_free,
       });
-      console.log("Lunch added successfully!");
+      message.success("Lunch added successfully!");
     } catch (error) {
-      console.error("Error adding Lunch:", error);
+      message.error(error);
       throw error;
     }
   };

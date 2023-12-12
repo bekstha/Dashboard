@@ -65,7 +65,6 @@ const LunchMenu = () => {
   const showModal = (item) => {
     setIsOpen(true);
     setSelectedItem(item);
-    console.log(item);
   };
 
   const hideModal = () => {

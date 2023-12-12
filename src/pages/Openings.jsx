@@ -4,6 +4,7 @@ import { updateDoc, doc } from "firebase/firestore";
 import useOpeningHours from "../hooks/useOpeningHours";
 import OpeningHoursCard from "../components/OpeningHoursCard";
 import LoadingScreen from "../components/LoadingScreen";
+import { message } from "antd";
 
 const Openings = () => {
   const { openingHours, setOpeningHours } = useOpeningHours();
@@ -11,7 +12,6 @@ const Openings = () => {
   const [localOpeningHours, setLocalOpeningHours] = useState(openingHours);
 
   useEffect(() => {
-    console.log("Contact data loaded:", openingHours);
     if (openingHours.length > 0) {
       setLoading(false);
       setLocalOpeningHours(openingHours);
@@ -19,7 +19,6 @@ const Openings = () => {
   }, [openingHours]);
 
   useEffect(() => {
-    console.log("Contact information changed:", openingHours);
     setLocalOpeningHours(openingHours);
   }, [openingHours]);
 
@@ -53,14 +52,13 @@ const Openings = () => {
             });
           })
         );
-        // After all items are updated, trigger a re-render
         setOpeningHours(localOpeningHours);
-        console.log("New opening hours state:", localOpeningHours);
+        message.success("Updated successfully")
       } else {
-        console.log("No changes to save.");
+        message.warning("No changes to save.");
       }
     } catch (error) {
-      console.error("Error updating documents:", error);
+      message.error(error);
     }
   };
 

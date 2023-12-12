@@ -3,6 +3,7 @@ import useContact from "../hooks/useContact";
 import { db } from "../config/firebase";
 import { updateDoc, doc } from "firebase/firestore";
 import LoadingScreen from "../components/LoadingScreen";
+import { message } from "antd";
 
 const Contact = () => {
   const { contact, setContact } = useContact();
@@ -56,12 +57,12 @@ const Contact = () => {
         await updateDoc(docRef, formData);
         // Refresh the data after updating
         setContact([{ id: contact[0]?.id, ...formData }]);
-        console.log("Document updated successfully!");
+        message.success("Updated successfully!");
       } else {
-        console.log("No changes to save.");
+        message.warning("No changes to save.");
       }
     } catch (error) {
-      console.error("Error updating document: ", error);
+      message.error(error);
     }
   };
 

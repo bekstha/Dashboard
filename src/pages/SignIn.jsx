@@ -13,14 +13,19 @@ const SignIn = () => {
 
   const onFinish = async (values) => {
     try {
-      const { admin, user } = await signIn(values.email, values.password);
+      const { admin, moderator, user } = await signIn(values.email, values.password);
 
       if (admin) {
         setAdminStatus(true)
         setUserIsLoggedIn(true)
         setActiveTitle("Lunch Menu");
-
         message.success("User logged in as Admin");
+        navigate("/LunchMenu");
+      } else if (moderator) {
+        setAdminStatus(true)
+        setUserIsLoggedIn(true);
+        setActiveTitle("Lunch Menu");
+        message.success("User logged in as Moderator");
         navigate("/LunchMenu");
       } else {
         setAdminStatus(false)
@@ -29,13 +34,11 @@ const SignIn = () => {
         message.warning("User is not an Admin");
       }
     } catch (error) {
-      console.error("onFinish error:", error.message);
-      message.error(error.message);
+      message.error("Your credentials do not match.");
     }
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("onFinishFailed called");
     console.error("Failed:", errorInfo);
     message.error("Please fill all  the fields.");
   };

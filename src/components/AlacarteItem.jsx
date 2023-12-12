@@ -109,7 +109,6 @@ const AlaCarteItem = ({ itemId, itemName, dishName, hideEditModal, hideAddModal 
 
   const handleDishTypeChange = (selectedDishType) => {
     setDishType(selectedDishType);
-    console.log(selectedDishType);
     setChicken(selectedDishType === "Chicken");
     setStarter(selectedDishType === "Starters");
     setTandoor(selectedDishType === "Tandoor");
