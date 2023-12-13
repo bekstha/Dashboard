@@ -60,6 +60,8 @@ const Openings = () => {
     } catch (error) {
       message.error(error);
     }
+    message.success("Updated successfully")
+
   };
 
   const isFormDataUnchanged = () => {
