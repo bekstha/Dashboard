@@ -12,7 +12,7 @@ import { useMainContext } from "../contexts/MainContextProvider";
 
 const Sidebar = () => {
   const { activeMenu, setActiveMenu, screenSize } = useStateContext();
-  const { setAdminStatus, setActiveTitle, setUserIsLoggedIn, handleLogout } = useMainContext();
+  const { setActiveTitle, handleLogout } = useMainContext();
 
   const { loading, error, signOut } = useSignIn();
 

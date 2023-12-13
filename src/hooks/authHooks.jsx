@@ -14,12 +14,12 @@ const useSignIn = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Check if the authenticated email exists in the "Admin" collection
+      // Checking if the authenticated email exists in the "Admin" collection
       const adminCollection = collection(db, "Admin");
       const adminQuery = query(adminCollection, where("email", "==", email));
       const adminSnapshot = await getDocs(adminQuery);
 
-      // Check if the authenticated email exists in the "Moderators" collection
+      // Checking if the authenticated email exists in the "Moderators" collection
       const modsCollection = collection(db, "Moderators");
       const modsQuery = query(modsCollection, where("email", "==", email));
       const modsSnapshot = await getDocs(modsQuery);

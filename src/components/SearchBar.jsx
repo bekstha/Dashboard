@@ -32,7 +32,7 @@ const SearchBar = ({ hideAddModal, day }) => {
     const isDayAlreadyPresent = item.day.includes(dayToAdd);
     if(!isDayAlreadyPresent) {
       const newData = {
-        day: [...item.day, dayToAdd], // Add dayToAdd to the existing days
+        day: [...item.day, dayToAdd],
       };
       Modal.confirm({
         title: "Add Lunch Item",

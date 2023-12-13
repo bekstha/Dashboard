@@ -1,4 +1,3 @@
-import React from "react";
 import {  Result } from "antd";
 
 const Success = ({ itemId, description }) => {

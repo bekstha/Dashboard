@@ -68,9 +68,7 @@ const OpeningHoursCard = ({
             </select>
             </div>
           </div>
-  
-          {/* <SegmentedButton isOpen={open} onToggle={onToggle} /> */}
-        </div>
+          </div>
       </div>
     );
   };

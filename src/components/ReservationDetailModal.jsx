@@ -8,7 +8,6 @@ const ReservationDetailModal = ({ isOpen, onClose, reservation }) => {
       onCancel={onClose}
       footer={null}
     >
-      {/* Display reservation details here */}
       {reservation && (
         <div>
           <p className="block">

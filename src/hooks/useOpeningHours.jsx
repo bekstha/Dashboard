@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { db } from "../config/firebase";
-import { getDocs, collection, updateDoc, doc } from "firebase/firestore";
+import { getDocs, collection } from "firebase/firestore";
 
 const useOpeningHours = () => {
   const [openingHours, setOpeningHours] = useState([]);
