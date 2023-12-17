@@ -6,6 +6,8 @@
 Welcome to the Restaurant Admin Dashboard repository! This web application is built using React with Vite and integrates seamlessly with Firebase. It serves as an admin dashboard designed for restaurant owners to effortlessly manage and update their public-facing webpages. The public site, accessible to cus
 tomers, displays various menus and contact information.
 
+[Kasthamandap Admin Dashboard](https://kasthamandap-admin.web.app/)
+
 ## Table of Contents
 - [Features](#features)
 - [Usage](#usage)
